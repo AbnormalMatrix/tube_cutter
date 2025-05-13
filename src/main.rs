@@ -1,5 +1,6 @@
+use gcode::Pos2D;
 use nannou::prelude::*;
-use nannou_egui::{self, egui::{self, Align2, Color32, Pos2, RichText}, Egui};
+use nannou_egui::{self, egui::{self, Align2, Color32, DragValue, Pos2, RichText, Slider, Visuals}, Egui};
 
 mod gcode;
 
@@ -15,7 +16,16 @@ struct Settings {
     color: Srgb<u8>,
     position: Vec2,
 
+    scale_factor: f32,
+    start_pos: gcode::Pos2D,
+    end_pos: gcode::Pos2D,
+
     gc: gcode::Gcode,
+    units: gcode::DistUnit,
+    tube_width: f32,
+    cut_angle: f32,
+    feedrate: f32,
+    pierce_delay: f32,
 }
 
 struct Model {
@@ -44,7 +54,16 @@ fn model(app: &App) -> Model {
             color: WHITE,
             position: vec2(0.0, 0.0),
 
+            scale_factor: 10.0,
+            start_pos: Pos2D::new(0.0, 0.0),
+            end_pos: Pos2D::new(0.0, 0.0),
+
             gc: gcode::Gcode::new(),
+            units: gcode::DistUnit::Metric,
+            tube_width: 1.0,
+            cut_angle: 0.0,
+            feedrate: 1000.0,
+            pierce_delay: 0.5,
         },
     }
 }
@@ -55,40 +74,69 @@ fn update(_app: &App, model: &mut Model, update: Update) {
 
     egui.set_elapsed_time(update.since_start);
     let ctx = egui.begin_frame();
+
+    let mut visuals = Visuals::light();
+    visuals.override_text_color = Some(Color32::WHITE);
     
+    let mut update_pos = false;
 
     egui::Window::new("Settings").show(&ctx, |ui| {
-        // Resolution slider
-        ui.label("Resolution:");
-        ui.add(egui::Slider::new(&mut settings.resolution, 1..=40));
 
-        // Scale slider
-        ui.label("Scale:");
-        ui.add(egui::Slider::new(&mut settings.scale, 0.0..=1000.0));
+        
 
-        // Rotation slider
-        ui.label("Rotation:");
-        ui.add(egui::Slider::new(&mut settings.rotation, 0.0..=360.0));
+        egui::Grid::new("main_grid")
+            .num_columns(1)
+            .striped(true)
+            .spacing([40.0, 4.0])
+            .show(ui, |ui| {
+                ui.horizontal(|ui| {
+                    ui.radio_value(&mut settings.units, gcode::DistUnit::Metric, "Metric (mm)");
+                    ui.radio_value(&mut settings.units, gcode::DistUnit::Imperial, "Imperial (in)");
+                });
+                ui.end_row();
 
-        // Random color button
-        let clicked = ui.button("Random color").clicked();
+                ui.horizontal(|ui| {
+                    ui.label(RichText::new("Tube Width").color(Color32::WHITE).size(14.0));
+                    // check if we are using metric or imperial to properly display this:
+                    match settings.units {
+                        gcode::DistUnit::Metric => {
+                            ui.add(Slider::new(&mut settings.tube_width, 0.0..=100.0).suffix("mm")).changed().then(|| update_pos = true);
+                        },
+                        gcode::DistUnit::Imperial => {
+                            ui.add(Slider::new(&mut settings.tube_width, 0.0..=100.0).suffix("in")).changed().then(|| update_pos = true);
+                        },
+                    }
+                });
+                ui.end_row();
 
-        if clicked {
-            settings.color = rgb(random(), random(), random());
+                ui.horizontal(|ui| {
+                    ui.label(RichText::new("Cut Angle").color(Color32::WHITE).size(14.0));
+                    ui.add(Slider::new(&mut settings.cut_angle, -180.0..=180.0).drag_value_speed(5.0).suffix("°")).changed().then(|| update_pos = true);
+                });
+                ui.end_row();
+
+                ui.horizontal(|ui| {
+                    ui.label(RichText::new("Feedrate (mm/min)").color(Color32::WHITE).size(14.0));
+                    ui.add(DragValue::new(&mut settings.feedrate));
+                });
+                ui.end_row();
+
+                ui.horizontal(|ui| {
+                    ui.label(RichText::new("Pierce Delay (s)").color(Color32::WHITE).size(14.0));
+                    ui.add(DragValue::new(&mut settings.pierce_delay).speed(0.1));
+                });
+                ui.end_row();
+            });
+        
+        ui.separator();
+
+
+        if ui.button(RichText::new("Add Cut").color(Color32::WHITE).size(14.0)).clicked() { 
+            settings.gc.dwell(settings.pierce_delay);
+            settings.gc.move_xy(&settings.end_pos, settings.feedrate);
         }
 
-
-
-        if ui.button(RichText::new("Set Positioning to Absolute").color(Color32::WHITE).size(14.0)).clicked() {
-            settings.gc.set_positioning_mode(gcode::PositioningMode::Absolute);
-        }
-
-        ui.horizontal(|ui| {
-            ui.label("hi");
-            ui.label("there");
-        });
-
-        if ui.button("Write Gcode").clicked() {
+        if ui.button(RichText::new("Write Gcode").color(Color32::WHITE).size(14.0)).clicked() {
             // use rfd to get the filename
             if let Some(path) = rfd::FileDialog::new()
                 .set_title("Save Gcode")
@@ -99,6 +147,10 @@ fn update(_app: &App, model: &mut Model, update: Update) {
             }
         }
     });
+
+    if update_pos {
+        settings.end_pos = gcode::calculate_end_pos(&settings.start_pos, settings.tube_width, settings.cut_angle, 1.0)
+    }
 
     egui::Window::new("Gcode Preview")
         .fixed_pos(Pos2::new(ctx.available_rect().right() - 10.0, ctx.available_rect().top() + 10.0))
@@ -118,13 +170,23 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(BLACK);
 
-    let rotation_radians = deg_to_rad(settings.rotation);
-    draw.ellipse()
-        .resolution(settings.resolution as f32)
-        .xy(settings.position)
-        .color(settings.color)
-        .rotate(-rotation_radians)
-        .radius(settings.scale);
+    draw.rect()
+        .width(settings.tube_width * settings.scale_factor)
+        .height(app.window_rect().h())
+        .color(STEELBLUE);
+
+    // calculate the line position
+
+    let line_x_offset = 0.0 - (settings.tube_width * settings.scale_factor) / 2.0;
+
+    let line_start = pt2((settings.start_pos.x * settings.scale_factor) + line_x_offset, settings.start_pos.y * settings.scale_factor);
+    let line_end = pt2((settings.end_pos.x * settings.scale_factor) + line_x_offset, settings.end_pos.y * settings.scale_factor);
+
+    draw.line()
+        .start(line_start)
+        .end(line_end)
+        .weight(4.0)
+        .color(RED);
 
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();

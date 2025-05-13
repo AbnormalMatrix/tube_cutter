@@ -1,9 +1,21 @@
 use std::{fs, path::PathBuf};
 
+pub fn calculate_end_pos(start_pos: &Pos2D, tube_width: f32, cut_angle: f32, overshoot_amount: f32) -> Pos2D {
+    let end_x = tube_width + overshoot_amount;
+    let mut end_y = start_pos.y.clone();
+
+    if cut_angle != 0.0 {
+        end_y = (tube_width + overshoot_amount) / cut_angle.to_radians().tan();
+    }
+
+    return Pos2D::new(end_x, end_y);
+}
+
 // units enum
+#[derive(PartialEq)]
 pub enum DistUnit {
-    Metric(f32), // mm
-    Imperial(f32), // inches
+    Metric, // mm
+    Imperial, // inches
 }
 
 // positioning mode enum, has absolute and relative
@@ -19,8 +31,8 @@ pub struct Gcode {
 }
 
 pub struct Pos2D {
-    x: f32,
-    y: f32,
+    pub x: f32,
+    pub y: f32,
 }
 
 impl Pos2D {
@@ -33,6 +45,7 @@ impl Gcode {
     pub fn new() -> Self {
         let mut gcode = Gcode { gcode_string: String::new() };
         gcode.set_units_to_mm();
+        gcode.set_positioning_mode(PositioningMode::Absolute);
         return gcode;
     }
 
@@ -60,7 +73,7 @@ impl Gcode {
     }
 
     // move to specified x and y positions
-    pub fn move_xy(&mut self, new_pos: Pos2D, feedrate: f32) {
+    pub fn move_xy(&mut self, new_pos: &Pos2D, feedrate: f32) {
         let g_command = format!("G1 X{} Y{} F{}", new_pos.x, new_pos.y, feedrate);
         let g_comment = format!("move to X: {}, Y: {} with feedrate: {}", new_pos.x, new_pos.y, feedrate);
         self.add_command_comment(g_command, g_comment);
@@ -68,7 +81,7 @@ impl Gcode {
 
     // home command, moves toolhead to 0, 0
     pub fn home2D(&mut self, feedrate: f32) {
-        self.move_xy(Pos2D::new(0.0, 0.0), feedrate);
+        self.move_xy(&Pos2D::new(0.0, 0.0), feedrate);
     }
 
     // dwell command waits specified seconds
