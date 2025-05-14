@@ -75,7 +75,7 @@ fn model(app: &App) -> Model {
 
             gc: gcode::Gcode::new(),
             units: gcode::DistUnit::Metric,
-            tube_width: 1.0,
+            tube_width: 25.0,
             cut_angle: 0.0,
             feedrate: 1000.0,
             pierce_delay: 0.5,
