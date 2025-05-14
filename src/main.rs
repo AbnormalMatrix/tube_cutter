@@ -1,9 +1,12 @@
+use std::sync::mpsc::{Receiver, Sender};
+
 use gcode::Pos2D;
 use nannou::prelude::*;
 use nannou_egui::{self, egui::{self, Align2, Color32, DragValue, Pos2, RichText, Slider, Visuals}, Egui};
 
-mod gcode;
 
+mod gcode;
+mod sender;
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -26,6 +29,17 @@ struct Settings {
     cut_angle: f32,
     feedrate: f32,
     pierce_delay: f32,
+
+
+    // serial port stuff
+    serial_path: String,
+    baudrate: u32,
+    serial_buffer: String,
+    serial_tx: Option<Sender<String>>,
+    serial_rx: Option<Receiver<String>>,
+    serial_connected: bool,
+
+    msg_to_send: String,
 }
 
 struct Model {
@@ -44,6 +58,7 @@ fn model(app: &App) -> Model {
     let window = app.window(window_id).unwrap();
 
     let egui = Egui::from_window(&window);
+
 
     Model {
         egui,
@@ -64,6 +79,16 @@ fn model(app: &App) -> Model {
             cut_angle: 0.0,
             feedrate: 1000.0,
             pierce_delay: 0.5,
+
+            // serial port stuff
+            serial_path: "/dev/ttyACM0".to_owned(),
+            baudrate: 115200,
+            serial_buffer: String::new(),
+            serial_rx: None,
+            serial_tx: None,
+            serial_connected: false,
+
+            msg_to_send: String::new(),
         },
     }
 }
@@ -157,6 +182,27 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         .pivot(Align2::RIGHT_TOP).show(&ctx, |ui| {
         ui.code(RichText::code((&settings.gc.gcode_string).into()).color(Color32::WHITE));
     });
+
+    egui::Window::new("Connection")
+        .fixed_pos(Pos2::new(ctx.available_rect().right() - 10.0, ctx.available_rect().bottom() - 10.0))
+        .pivot(Align2::RIGHT_BOTTOM)
+        .show(&ctx, |ui| {
+            sender::make_connection_button(ui, settings);
+            if settings.serial_connected {
+                if let Some(rx) = &settings.serial_rx {
+                    while let Ok(data) = rx.try_recv() {
+                        settings.serial_buffer.push_str(&data);
+                    }
+                }
+                ui.label(&settings.serial_buffer);
+                ui.horizontal(|ui| {
+                    ui.text_edit_singleline(&mut settings.msg_to_send);
+                    if ui.button("send").clicked() {
+                        sender::send_serial_message(settings, settings.msg_to_send.clone());
+                    }
+                });
+            }
+        });
 }
 
 fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
