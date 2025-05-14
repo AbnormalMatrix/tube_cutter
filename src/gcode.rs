@@ -91,6 +91,14 @@ impl Gcode {
         self.add_command_comment(g_command, g_comment);
     }
 
+    pub fn set_plasma_enabled(&mut self, enabled: bool) {
+        if enabled {
+            self.add_command_comment("M3".to_owned(), "set plasma enabled".to_owned());
+        } else {
+            self.add_command_comment("M5".to_owned(), "set plasma disabled".to_owned());
+        }
+    }
+
     // write the gcode to a specified file
     pub fn write_to_file(&self, filename: PathBuf) {
         fs::write(filename, &self.gcode_string);

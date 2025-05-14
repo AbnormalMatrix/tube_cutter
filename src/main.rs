@@ -157,8 +157,10 @@ fn update(_app: &App, model: &mut Model, update: Update) {
 
 
         if ui.button(RichText::new("Add Cut").color(Color32::WHITE).size(14.0)).clicked() { 
+            settings.gc.set_plasma_enabled(true);
             settings.gc.dwell(settings.pierce_delay);
             settings.gc.move_xy(&settings.end_pos, settings.feedrate);
+            settings.gc.set_plasma_enabled(false);
         }
 
         if ui.button(RichText::new("Write Gcode").color(Color32::WHITE).size(14.0)).clicked() {
