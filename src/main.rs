@@ -7,6 +7,7 @@ use nannou_egui::{self, egui::{self, Align2, Color32, DragValue, Pos2, RichText,
 
 mod gcode;
 mod sender;
+mod status;
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -81,7 +82,7 @@ fn model(app: &App) -> Model {
             pierce_delay: 0.5,
 
             // serial port stuff
-            serial_path: "/dev/ttyACM0".to_owned(),
+            serial_path: "/dev/ttyUSB0".to_owned(),
             baudrate: 115200,
             serial_buffer: String::new(),
             serial_rx: None,

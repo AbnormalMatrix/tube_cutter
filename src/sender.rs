@@ -4,7 +4,14 @@ use tokio::task;
 use nannou_egui::egui;
 use serial2::SerialPort;
 
-use crate::Settings;
+use crate::{gcode, Settings};
+
+// struct to store info/status about the physical machine
+// example of idle status report: <Idle|MPos:0.000,0.000,0.000|Bf:35,1023|FS:0,0|Pn:XYZ>
+struct MachineInfo {
+    position: gcode::Pos2D,
+    idle: bool,
+}
 
 pub fn get_port_list(ui: &mut egui::Ui) {
     
@@ -39,6 +46,9 @@ pub fn make_connection_button(ui: &mut egui::Ui, settings: &mut Settings) {
         }
     } else {
         ui.label("Connected");
+        if ui.button("Get Status").clicked() {
+            get_status(settings);
+        }
     }
 }
 
@@ -75,4 +85,8 @@ pub fn send_serial_message(settings: &mut Settings, message: String) {
     if let Some(tx) = &settings.serial_tx {
         let _ = tx.send(message);
     }
+}
+
+pub fn get_status(settings: &mut Settings) {
+    send_serial_message(settings, "?".to_owned());
 }
