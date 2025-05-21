@@ -1,4 +1,4 @@
-use std::sync::mpsc::{Receiver, Sender};
+use std::sync::{mpsc::{Receiver, Sender}, Arc, Mutex};
 use tokio::task;
 
 use nannou_egui::egui;
@@ -27,7 +27,7 @@ pub fn get_port_list(ui: &mut egui::Ui) {
 
 }
 
-pub fn make_connection_button(ui: &mut egui::Ui, settings: &mut Settings) {
+pub fn make_connection_button(ui: &mut egui::Ui, settings: &mut Settings, command_status: Arc<Mutex<CommandStatus>>) {
     if settings.serial_rx.is_none() {
         if ui.button("Connect").clicked() {
             let (to_gui_tx, from_serial_rx) = std::sync::mpsc::channel();     // serial → GUI
@@ -38,6 +38,7 @@ pub fn make_connection_button(ui: &mut egui::Ui, settings: &mut Settings) {
                 settings.baudrate,
                 to_gui_tx,
                 from_gui_rx,
+                command_status
             );
 
             settings.serial_rx = Some(from_serial_rx);
@@ -47,9 +48,17 @@ pub fn make_connection_button(ui: &mut egui::Ui, settings: &mut Settings) {
     } else {
         ui.label("Connected");
         if ui.button("Get Status").clicked() {
-            get_status(settings);
+            
         }
     }
+}
+
+pub enum CommandStatus {
+    Idle,
+    Waiting,
+}
+pub enum MachineCommand {
+    StringCommand(String),
 }
 
 
@@ -57,36 +66,56 @@ pub fn start_serial_connection(
     serial_path: String,
     baudrate: u32,
     output_tx: Sender<String>, // from serial to GUI
-    input_rx: Receiver<String>, // from GUI to serial
+    command_rx: Receiver<MachineCommand>, // from GUI to serial
+    command_status: Arc<Mutex<CommandStatus>>
 ) {
     task::spawn_blocking(move || {
         let mut port = SerialPort::open(&serial_path, baudrate).expect("Failed to open serial port");
         let mut buf = [0u8; 1024];
+        let mut line_buf = String::new();
 
         loop {
-            // Write if there's an input message
-            if let Ok(msg) = input_rx.try_recv() {
-                let _ = port.write_all(msg.as_bytes());
+            // check if there are any commands to send
+            if let Ok(msg) = command_rx.try_recv() {
+                match msg {
+                    MachineCommand::StringCommand(cmd) => {
+                        let _ = port.write_all(format!("{}\n", cmd).as_bytes());
+                        println!("Command sent!");
+
+                        // update the command status
+                        let mut command_status = command_status.lock().unwrap();
+                        *command_status = CommandStatus::Waiting;
+                    }
+                }
             }
 
             // Read incoming serial data
             match port.read(&mut buf) {
                 Ok(n) if n > 0 => {
-                    let s = String::from_utf8_lossy(&buf[..n]).to_string();
-                    let _ = output_tx.send(s);
+                    let chunk = String::from_utf8_lossy(&buf[..n]);
+                    for ch in chunk.chars() {
+                        if ch == '\r' {
+                            // If the line ends with \r, process it
+                            let line = line_buf.trim();
+                            if line == "ok" {
+                                println!("Ok!");
+                                // update the command status
+                                let mut command_status = command_status.lock().unwrap();
+                                *command_status = CommandStatus::Idle;
+                            }
+                            line_buf.clear();
+                        } else if ch != '\n' {
+                            // Append anything that's not a newline
+                            line_buf.push(ch);
+                        }
+                    }
                 }
-                _ => std::thread::sleep(std::time::Duration::from_millis(10)),
+                _ => {
+                    // timeout or no data
+                    std::thread::sleep(std::time::Duration::from_millis(10));
+                }
             }
         }
     });
 }
 
-pub fn send_serial_message(settings: &mut Settings, message: String) {
-    if let Some(tx) = &settings.serial_tx {
-        let _ = tx.send(message);
-    }
-}
-
-pub fn get_status(settings: &mut Settings) {
-    send_serial_message(settings, "?".to_owned());
-}

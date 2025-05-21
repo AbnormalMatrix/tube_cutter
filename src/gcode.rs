@@ -99,6 +99,11 @@ impl Gcode {
         }
     }
 
+    // sets machine's 0 to current position
+    pub fn set_zero(&mut self) {
+        self.add_command_comment("G10 P0 L20 X0 Y0 Z0".to_owned(), "set machine zero".to_owned());
+    }
+
     // write the gcode to a specified file
     pub fn write_to_file(&self, filename: PathBuf) {
         fs::write(filename, &self.gcode_string);

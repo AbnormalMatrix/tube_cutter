@@ -1,4 +1,4 @@
-use std::sync::mpsc::{Receiver, Sender};
+use std::sync::{mpsc::{Receiver, Sender}, Arc, Mutex};
 
 use gcode::Pos2D;
 use nannou::prelude::*;
@@ -36,11 +36,16 @@ struct Settings {
     serial_path: String,
     baudrate: u32,
     serial_buffer: String,
-    serial_tx: Option<Sender<String>>,
+    serial_tx: Option<Sender<sender::MachineCommand>>,
     serial_rx: Option<Receiver<String>>,
     serial_connected: bool,
 
+    command_status: Arc<Mutex<sender::CommandStatus>>,
+
     msg_to_send: String,
+
+    // machine status stuff
+    machine_status: status::MachineStatus,
 }
 
 struct Model {
@@ -89,7 +94,12 @@ fn model(app: &App) -> Model {
             serial_tx: None,
             serial_connected: false,
 
+            command_status: Arc::new(Mutex::new(sender::CommandStatus::Idle)),
+
             msg_to_send: String::new(),
+
+            // machine status stuff
+            machine_status: status::MachineStatus::new(),
         },
     }
 }
@@ -190,7 +200,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         .fixed_pos(Pos2::new(ctx.available_rect().right() - 10.0, ctx.available_rect().bottom() - 10.0))
         .pivot(Align2::RIGHT_BOTTOM)
         .show(&ctx, |ui| {
-            sender::make_connection_button(ui, settings);
+            sender::make_connection_button(ui, settings, Arc::clone(&settings.command_status));
             if settings.serial_connected {
                 if let Some(rx) = &settings.serial_rx {
                     while let Ok(data) = rx.try_recv() {
@@ -201,8 +211,27 @@ fn update(_app: &App, model: &mut Model, update: Update) {
                 ui.horizontal(|ui| {
                     ui.text_edit_singleline(&mut settings.msg_to_send);
                     if ui.button("send").clicked() {
-                        sender::send_serial_message(settings, settings.msg_to_send.clone());
+                        settings.serial_tx.as_ref().unwrap().send(sender::MachineCommand::StringCommand(settings.msg_to_send.clone()));
                     }
+                    let command_status = settings.command_status.lock().unwrap();
+                    match *command_status {
+                        sender::CommandStatus::Idle => {},
+                        sender::CommandStatus::Waiting => {
+                            ui.spinner();
+                        }
+                    }
+                });
+                
+                if ui.button("status").clicked() {
+                    settings.machine_status = status::parse_status("<Idle|MPos:-0.400,0.325,0.000|Bf:35,1023|FS:0,0|Pn:XYZ>".to_owned());
+                }
+
+                
+                
+                // display machine status
+                ui.horizontal(|ui| {
+                    ui.label(RichText::new(format!("X: {}", settings.machine_status.position.x)).size(14.0).color(Color32::RED));
+                    ui.label(RichText::new(format!("X: {}", settings.machine_status.position.y)).size(14.0).color(Color32::GREEN));
                 });
             }
         });
@@ -236,6 +265,13 @@ fn view(app: &App, model: &Model, frame: Frame) {
         .end(line_end)
         .weight(4.0)
         .color(RED);
+
+    // draw the toolhead
+
+    draw.ellipse()
+        .w_h(50.0, 50.0)
+        .color(GREEN)
+        .x_y(settings.machine_status.position.x * settings.scale_factor, settings.machine_status.position.y * settings.scale_factor);
 
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
