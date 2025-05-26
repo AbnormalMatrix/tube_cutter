@@ -2,12 +2,14 @@ use std::sync::{mpsc::{Receiver, Sender}, Arc, Mutex};
 
 use gcode::Pos2D;
 use nannou::prelude::*;
-use nannou_egui::{self, egui::{self, Align2, Color32, DragValue, Pos2, RichText, Slider, Visuals}, Egui};
+use nannou_egui::{self, egui::{self, Align2, Color32, DragValue, FontDefinitions, Pos2, RichText, Slider, Visuals}, Egui};
+mod phosphor_fonts;
 
 
 mod gcode;
 mod sender;
 mod status;
+
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -65,6 +67,10 @@ fn model(app: &App) -> Model {
     let window = app.window(window_id).unwrap();
 
     let egui = Egui::from_window(&window);
+
+    let mut fonts = FontDefinitions::default();
+    phosphor_fonts::add_to_fonts(&mut fonts, phosphor_fonts::Variant::Regular);
+    egui.ctx().set_fonts(fonts);
 
 
     Model {
@@ -179,7 +185,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
             settings.gc.set_plasma_enabled(false);
         }
 
-        if ui.button(RichText::new("Run Job").color(Color32::WHITE).size(14.0)).clicked() {
+        if ui.button(RichText::new(format!("{} Run Job", phosphor_fonts::regular::PLAY_CIRCLE)).color(Color32::WHITE).size(18.0)).clicked() {
             settings.gc.add_command("?".to_string());
             settings.serial_tx.as_ref().unwrap().send(sender::MachineCommand::GcodeCommand(settings.gc.gcode_string.clone()));
 
