@@ -31,6 +31,7 @@ struct Settings {
     feedrate: f32,
     pierce_delay: f32,
 
+    cut_right: bool,
 
     // serial port stuff
     serial_path: String,
@@ -45,7 +46,7 @@ struct Settings {
     msg_to_send: String,
 
     // machine status stuff
-    machine_status: status::MachineStatus,
+    machine_status: Arc<Mutex<status::MachineStatus>>,
 }
 
 struct Model {
@@ -86,6 +87,8 @@ fn model(app: &App) -> Model {
             feedrate: 1000.0,
             pierce_delay: 0.5,
 
+            cut_right: true,
+
             // serial port stuff
             serial_path: "/dev/ttyUSB0".to_owned(),
             baudrate: 115200,
@@ -99,7 +102,7 @@ fn model(app: &App) -> Model {
             msg_to_send: String::new(),
 
             // machine status stuff
-            machine_status: status::MachineStatus::new(),
+            machine_status: Arc::new(Mutex::new(status::MachineStatus::new())),
         },
     }
 }
@@ -162,6 +165,8 @@ fn update(_app: &App, model: &mut Model, update: Update) {
                     ui.add(DragValue::new(&mut settings.pierce_delay).speed(0.1));
                 });
                 ui.end_row();
+
+                ui.checkbox(&mut settings.cut_right, "Cut Right").changed().then(|| update_pos = true);
             });
         
         ui.separator();
@@ -173,6 +178,25 @@ fn update(_app: &App, model: &mut Model, update: Update) {
             settings.gc.move_xy(&settings.end_pos, settings.feedrate);
             settings.gc.set_plasma_enabled(false);
         }
+
+        if ui.button(RichText::new("Run Job").color(Color32::WHITE).size(14.0)).clicked() {
+            settings.gc.add_command("?".to_string());
+            settings.serial_tx.as_ref().unwrap().send(sender::MachineCommand::GcodeCommand(settings.gc.gcode_string.clone()));
+
+        }
+
+        if ui.button("Clear").clicked() {
+            settings.gc = gcode::Gcode::new();
+        }
+
+        ui.horizontal(|ui| {
+            if ui.button("Set Home").clicked() {
+                settings.serial_tx.as_ref().unwrap().send(sender::MachineCommand::StringCommand("G10 P0 L20 X0 Y0 Z0".to_owned()));
+            }
+            if ui.button("Go Home").clicked() {
+                settings.serial_tx.as_ref().unwrap().send(sender::MachineCommand::StringCommand("G1 X0 Y0 F1000".to_owned()));
+            }
+        });
 
         if ui.button(RichText::new("Write Gcode").color(Color32::WHITE).size(14.0)).clicked() {
             // use rfd to get the filename
@@ -187,7 +211,10 @@ fn update(_app: &App, model: &mut Model, update: Update) {
     });
 
     if update_pos {
-        settings.end_pos = gcode::calculate_end_pos(&settings.start_pos, settings.tube_width, settings.cut_angle, 1.0)
+        let machine_status = settings.machine_status.lock().unwrap();
+        settings.start_pos = machine_status.position.clone();
+        
+        settings.end_pos = gcode::calculate_end_pos(&settings.start_pos, settings.tube_width, settings.cut_angle, 0.0, settings.cut_right);
     }
 
     egui::Window::new("Gcode Preview")
@@ -200,7 +227,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         .fixed_pos(Pos2::new(ctx.available_rect().right() - 10.0, ctx.available_rect().bottom() - 10.0))
         .pivot(Align2::RIGHT_BOTTOM)
         .show(&ctx, |ui| {
-            sender::make_connection_button(ui, settings, Arc::clone(&settings.command_status));
+            sender::make_connection_button(ui, settings, Arc::clone(&settings.command_status), Arc::clone(&settings.machine_status));
             if settings.serial_connected {
                 if let Some(rx) = &settings.serial_rx {
                     while let Ok(data) = rx.try_recv() {
@@ -223,16 +250,11 @@ fn update(_app: &App, model: &mut Model, update: Update) {
                 });
                 
                 if ui.button("status").clicked() {
-                    settings.machine_status = status::parse_status("<Idle|MPos:-0.400,0.325,0.000|Bf:35,1023|FS:0,0|Pn:XYZ>".to_owned());
+                    settings.serial_tx.as_ref().unwrap().send(sender::MachineCommand::StringCommand("?".to_string()));
                 }
 
                 
                 
-                // display machine status
-                ui.horizontal(|ui| {
-                    ui.label(RichText::new(format!("X: {}", settings.machine_status.position.x)).size(14.0).color(Color32::RED));
-                    ui.label(RichText::new(format!("X: {}", settings.machine_status.position.y)).size(14.0).color(Color32::GREEN));
-                });
             }
         });
 }
@@ -267,11 +289,16 @@ fn view(app: &App, model: &Model, frame: Frame) {
         .color(RED);
 
     // draw the toolhead
+    let machine_status = settings.machine_status.lock().unwrap();
 
+
+    let tool_screen_position = machine_status.position.to_screen_space(&settings.tube_width, &settings.scale_factor);
+
+    
     draw.ellipse()
         .w_h(50.0, 50.0)
         .color(GREEN)
-        .x_y(settings.machine_status.position.x * settings.scale_factor, settings.machine_status.position.y * settings.scale_factor);
+        .x_y(tool_screen_position.x, tool_screen_position.y);
 
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();

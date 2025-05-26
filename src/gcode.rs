@@ -1,9 +1,15 @@
 use std::{fs, path::PathBuf};
 
-pub fn calculate_end_pos(start_pos: &Pos2D, tube_width: f32, cut_angle: f32, overshoot_amount: f32) -> Pos2D {
-    let end_x = tube_width + overshoot_amount;
+pub fn calculate_end_pos(start_pos: &Pos2D, tube_width: f32, cut_angle: f32, overshoot_amount: f32, cut_right: bool) -> Pos2D {
+    let mut end_x = 0.0;
+    if cut_right {
+        end_x = tube_width + overshoot_amount;
+    } else {
+        end_x = start_pos.x - tube_width - overshoot_amount;
+    } 
+    
     let mut end_y = start_pos.y.clone();
-
+    
     if cut_angle != 0.0 {
         end_y = (tube_width + overshoot_amount) / cut_angle.to_radians().tan();
     }
@@ -30,6 +36,7 @@ pub struct Gcode {
     pub gcode_string: String,
 }
 
+#[derive(Clone)]
 pub struct Pos2D {
     pub x: f32,
     pub y: f32,
@@ -38,6 +45,12 @@ pub struct Pos2D {
 impl Pos2D {
     pub fn new(x: f32, y: f32) -> Self {
         Self { x, y }
+    }
+    pub fn to_screen_space(&self, tube_width: &f32, scale_factor: &f32) -> Pos2D {
+        // the origin is offset to the left by half the tube with * the scale factor
+        let origin = Pos2D::new(-(tube_width/2.0) *scale_factor, 0.0); // origin screen space
+        let screen_position = Pos2D::new((self.x * scale_factor) + origin.x, self.y*scale_factor);
+        return screen_position;
     }
 }
 
