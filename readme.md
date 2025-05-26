@@ -46,3 +46,5 @@ cd  tube_cutter
 cargo  run  --release
 
 ```
+
+Phosphor Icons are licensed under MIT.
