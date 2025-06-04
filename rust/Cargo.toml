@@ -1,0 +1,16 @@
+[package]
+name = "rust_lib_flutter_tube_cutter"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+flutter_rust_bridge = "=2.10.0"
+serial2 = "0.2.29"
+tokio = { version = "1.45.0", features = ["macros", "rt-multi-thread"] }
+crossbeam-channel = "0.5.15"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
