@@ -5,6 +5,7 @@ import 'package:flutter_tube_cutter/homePage.dart';
 import 'package:flutter_tube_cutter/runJobPage.dart';
 import 'package:flutter_tube_cutter/settingsPage.dart';
 import 'package:flutter_tube_cutter/src/rust/api/gcode.dart';
+import 'package:flutter_tube_cutter/src/rust/api/sender.dart';
 import 'package:flutter_tube_cutter/src/rust/api/simple.dart';
 import 'package:flutter_tube_cutter/src/rust/frb_generated.dart';
 import 'package:flutter_tube_cutter/tunePage.dart';
@@ -26,6 +27,12 @@ class _MyAppState extends State<MyApp> {
 
   // this is the rust gcode struct, in dart you can't interact with the attributes but you can call the methods
   ValueNotifier<Gcode> gcode = ValueNotifier<Gcode>(Gcode());
+
+  num laserOffset = 40.0;
+
+  // this is the rust machine connection struct, used for communicating with the machine
+  // it is here to remain alive while the app is open regardless of what page you are on
+  MachineConnection machineConnection = MachineConnection();
 
   void onNavItemTapped(int index) {
     setState(() {
@@ -59,7 +66,10 @@ class _MyAppState extends State<MyApp> {
                 GcodePreviewPage(
                   gcode: gcode,
                 ),
-                RunJobPage(gcode: gcode),
+                RunJobPage(
+                  gcode: gcode,
+                  machineConnection: machineConnection,
+                ),
               ][selectedIndex],
             ),
           ],

@@ -6,7 +6,9 @@ import 'package:flutter_tube_cutter/src/rust/api/simple.dart';
 
 class RunJobPage extends StatefulWidget {
   final ValueNotifier<Gcode> gcode;
-  const RunJobPage({super.key, required this.gcode});
+  final MachineConnection machineConnection;
+  const RunJobPage(
+      {super.key, required this.gcode, required this.machineConnection});
 
   @override
   State<RunJobPage> createState() => _RunJobPageState();
@@ -21,9 +23,6 @@ class _RunJobPageState extends State<RunJobPage> {
 
   JogDist selectedJogDist = JogDist.one;
 
-  // machine connection object (rust)
-  MachineConnection machineConnection = MachineConnection();
-
   void getSerialPortsPressed() {
     setState(() {
       serialPorts = getSerialPorts();
@@ -36,12 +35,12 @@ class _RunJobPageState extends State<RunJobPage> {
   void serialPortSelectedPressed(value) {
     setState(() {
       selectedSerialPort = value;
-      machineConnection.setSerialPort(newPort: value);
+      widget.machineConnection.setSerialPort(newPort: value);
     });
   }
 
   void connectToMachine() {
-    machineConnection.makeConnection();
+    widget.machineConnection.makeConnection();
     setState(() {
       isConnected = true;
     });
@@ -56,15 +55,18 @@ class _RunJobPageState extends State<RunJobPage> {
   void jogButtonPressed(x, y) {
     switch (selectedJogDist) {
       case JogDist.pointOne:
-        machineConnection.sendStringCommandLowPriority(
+        widget.machineConnection.sendStringCommandLowPriority(
             command: jog(xDist: x * 0.1, yDist: y * 0.1));
+
         break;
       case JogDist.one:
-        machineConnection.sendStringCommandLowPriority(
-            command: jog(xDist: x, yDist: y));
+        widget.machineConnection
+            .sendStringCommandLowPriority(command: jog(xDist: x, yDist: y));
+        break;
       case JogDist.ten:
-        machineConnection.sendStringCommandLowPriority(
+        widget.machineConnection.sendStringCommandLowPriority(
             command: jog(xDist: x * 10.0, yDist: y * 10.0));
+        break;
       default:
     }
   }
@@ -130,7 +132,7 @@ class _RunJobPageState extends State<RunJobPage> {
             child: Column(
               children: [
                 JogArrows(
-                  machineConnection: machineConnection,
+                  jogButtonPressed: jogButtonPressed,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
@@ -147,19 +149,25 @@ class _RunJobPageState extends State<RunJobPage> {
       Divider(),
       ElevatedButton.icon(
         onPressed: () {
-          machineConnection.sendGcodeCommand(
-              command: widget.gcode.value.getGcodeString());
+          widget.machineConnection
+              .sendGcodeCommand(command: widget.gcode.value.getGcodeString());
         },
         label: Text("Run Job"),
         icon: Icon(Icons.play_arrow),
       ),
       ElevatedButton.icon(
         onPressed: () {
-          machineConnection.home();
+          widget.machineConnection.home();
         },
         label: Text("Home"),
         icon: Icon(Icons.home),
-      )
+      ),
+      ElevatedButton(
+          onPressed: () {
+            widget.machineConnection
+                .sendStringCommand(command: "G10 P0 L20 X0 Y0 Z0");
+          },
+          child: Text("Set Home")),
     ]);
   }
 }
@@ -203,8 +211,8 @@ class AxisInfoCard extends StatelessWidget {
 enum JogDist { pointOne, one, ten }
 
 class JogArrows extends StatelessWidget {
-  final MachineConnection machineConnection;
-  const JogArrows({super.key, required this.machineConnection});
+  final Function(num x, num y) jogButtonPressed;
+  const JogArrows({super.key, required this.jogButtonPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -214,8 +222,7 @@ class JogArrows extends StatelessWidget {
         // Up button
         ElevatedButton(
           onPressed: () {
-            machineConnection.sendStringCommandLowPriority(
-                command: jog(xDist: 0, yDist: 1.0));
+            jogButtonPressed(0.0, 1.0);
           },
           child: Column(
             children: [
@@ -237,8 +244,7 @@ class JogArrows extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                machineConnection.sendStringCommandLowPriority(
-                    command: jog(xDist: -1.0, yDist: 0));
+                jogButtonPressed(-1.0, 0);
               },
               child: Row(
                 children: [
@@ -260,8 +266,7 @@ class JogArrows extends StatelessWidget {
             const SizedBox(width: 20),
             ElevatedButton(
               onPressed: () {
-                machineConnection.sendStringCommandLowPriority(
-                    command: jog(xDist: 1.0, yDist: 0));
+                jogButtonPressed(1.0, 0.0);
               },
               child: Row(
                 children: [
@@ -285,8 +290,7 @@ class JogArrows extends StatelessWidget {
         // Down button
         ElevatedButton(
           onPressed: () {
-            machineConnection.sendStringCommandLowPriority(
-                command: jog(xDist: 0, yDist: -1.0));
+            jogButtonPressed(0.0, -1.0);
           },
           child: Column(
             children: [

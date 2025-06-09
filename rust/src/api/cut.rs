@@ -1,3 +1,5 @@
+use crate::api::gcode::calculate_end_pos;
+
 use super::gcode::Pos2D;
 
 // the cut struct has info like start and end positions, cut angle and so on
@@ -43,6 +45,12 @@ impl Cut {
     #[flutter_rust_bridge::frb(sync)]
     pub fn set_pierce_delay(&mut self, new_delay: f32) {
         self.pierce_delay = new_delay;
+    }
+
+    #[flutter_rust_bridge::frb(sync)]
+    pub fn get_end_pos(&self) -> (f32, f32) {
+        let end_pos = calculate_end_pos(&self.start_position, self.tube_width, self.cut_angle, 1.0, true);
+        return (end_pos.x, end_pos.y);
     }
 
 }

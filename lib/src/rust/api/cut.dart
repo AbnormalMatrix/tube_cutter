@@ -33,6 +33,8 @@ abstract class Cut implements RustOpaqueInterface {
 
   set tubeWidth(double tubeWidth);
 
+  (double, double) getEndPos();
+
   factory Cut() => RustLib.instance.api.crateApiCutCutNew();
 
   void setCutAngle({required double newAngle});

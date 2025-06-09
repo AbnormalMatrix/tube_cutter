@@ -26,6 +26,12 @@ class _GcodePreviewPageState extends State<GcodePreviewPage> {
 
   void onExportPressed() {}
 
+  void resetGcode() {
+    setState(() {
+      widget.gcode.value = Gcode();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -36,7 +42,11 @@ class _GcodePreviewPageState extends State<GcodePreviewPage> {
           onPressed: onExportPressed,
           icon: Icon(Icons.save),
           label: Text("Export Gcode"),
-        )
+        ),
+        FloatingActionButton.extended(
+          onPressed: resetGcode,
+          label: Text("Reset"),
+        ),
       ],
     );
   }

@@ -152,6 +152,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PositioningMode dco_decode_positioning_mode(dynamic raw);
 
   @protected
+  (double, double) dco_decode_record_f_32_f_32(dynamic raw);
+
+  @protected
   int dco_decode_u_8(dynamic raw);
 
   @protected
@@ -276,6 +279,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PositioningMode sse_decode_positioning_mode(SseDeserializer deserializer);
+
+  @protected
+  (double, double) sse_decode_record_f_32_f_32(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -422,6 +428,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_positioning_mode(
     PositioningMode self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_record_f_32_f_32(
+    (double, double) self,
     SseSerializer serializer,
   );
 

@@ -19,6 +19,9 @@ class _TunePageState extends State<TunePage> {
   num cutAngle = 90.0;
   num pierceDelay = 0.5;
 
+  num endX = 0;
+  num endY = 0;
+
   bool shouldRepaintCanvas = false;
 
   Cut tubeCut = Cut();
@@ -29,6 +32,10 @@ class _TunePageState extends State<TunePage> {
         tubeWidth = num.parse(newNum);
         // update the cut object
         tubeCut.setTubeWidth(newWidth: tubeWidth.toDouble());
+        // update the end positions
+        var endPos = tubeCut.getEndPos();
+        endX = endPos.$1;
+        endY = endPos.$2;
         shouldRepaintCanvas = true;
       });
     }
@@ -40,6 +47,10 @@ class _TunePageState extends State<TunePage> {
         cutAngle = num.parse(newNum);
         // update the cut object
         tubeCut.setCutAngle(newAngle: cutAngle.toDouble());
+        // update the end positions
+        var endPos = tubeCut.getEndPos();
+        endX = endPos.$1;
+        endY = endPos.$2;
         shouldRepaintCanvas = true;
       });
     }
@@ -158,6 +169,8 @@ class _TunePageState extends State<TunePage> {
             MainCanvas(
               tubeWidth: tubeWidth,
               shouldRepaintCanvas: shouldRepaintCanvas,
+              endX: endX,
+              endY: endY,
             ),
           ],
         ),
@@ -179,32 +192,77 @@ class _TunePageState extends State<TunePage> {
 
 class MainCanvas extends StatelessWidget {
   final num tubeWidth;
+  final num endX;
+  final num endY;
+
   final bool shouldRepaintCanvas;
   const MainCanvas(
-      {required this.tubeWidth, required this.shouldRepaintCanvas});
+      {required this.tubeWidth,
+      required this.shouldRepaintCanvas,
+      required this.endX,
+      required this.endY});
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       size: Size(800, 600),
       painter: MainCanvasPainter(
-          shouldRepaintCanvas: shouldRepaintCanvas, tubeWidth: tubeWidth),
+          shouldRepaintCanvas: shouldRepaintCanvas,
+          tubeWidth: tubeWidth,
+          endX: endX,
+          endY: endY),
     );
   }
 }
 
 class MainCanvasPainter extends CustomPainter {
   final num tubeWidth;
+  final num endX;
+  final num endY;
+
   final bool shouldRepaintCanvas;
 
   MainCanvasPainter(
-      {required this.shouldRepaintCanvas, required this.tubeWidth});
+      {required this.shouldRepaintCanvas,
+      required this.tubeWidth,
+      required this.endX,
+      required this.endY});
+
+  double mmToPx(double mm) {
+    double scaleFactor = 4.0;
+    return mm * scaleFactor;
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.blue;
+    var paint = Paint()..color = Colors.blue;
 
-    canvas.drawCircle(Offset(400, 300), tubeWidth.toDouble(), paint);
+    // the tube rect represents the actual tube
+    // calculate the offset of the tube based on the size
+    double tubeWidthPx = mmToPx(tubeWidth.toDouble());
+    double tubeOffset = (size.width / 2) - (tubeWidthPx / 2);
+
+    Rect tubeRect = Rect.fromLTWH(
+        tubeOffset, 50, mmToPx(tubeWidth.toDouble()), size.height);
+    canvas.drawRect(tubeRect, paint);
+
+    // the cut line represents the cut
+    double machineOriginX = (size.width / 2) - (tubeWidthPx / 2);
+    double machineOriginY = (size.height + 50) / 2;
+    // the start pos
+    Offset startPos = Offset(machineOriginX, machineOriginY);
+    // the end pos
+    double endPosX = machineOriginX + mmToPx(endX.toDouble());
+    double endPosY = machineOriginY - mmToPx(endY.toDouble());
+    Offset endPos = Offset(endPosX, endPosY);
+
+    // set the color and stroke of the line
+    paint.color = Colors.red;
+    paint.strokeWidth = 10;
+    paint.strokeCap = StrokeCap.round;
+
+    // draw the cut line
+    canvas.drawLine(startPos, endPos, paint);
   }
 
   @override

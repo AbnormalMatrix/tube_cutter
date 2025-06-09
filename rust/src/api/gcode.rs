@@ -6,7 +6,7 @@ use super::cut::Cut;
 pub fn calculate_end_pos(start_pos: &Pos2D, tube_width: f32, cut_angle: f32, overshoot_amount: f32, cut_right: bool) -> Pos2D {
     let mut end_x = 0.0;
     if cut_right {
-        end_x = tube_width + overshoot_amount;
+        end_x = start_pos.x + tube_width + overshoot_amount;
     } else {
         end_x = start_pos.x - tube_width - overshoot_amount;
     } 
@@ -138,7 +138,13 @@ impl Gcode {
     #[flutter_rust_bridge::frb(sync)]
     pub fn add_cut(&mut self, tube_cut: Cut) {
         // calculate the end position
-        let end_position = calculate_end_pos(&tube_cut.start_position, tube_cut.tube_width, tube_cut.cut_angle, 1.0, true);
+
+        let real_start = Pos2D::new(&tube_cut.start_position.x + 40.0, tube_cut.start_position.y);
+
+        let end_position = calculate_end_pos(&real_start, tube_cut.tube_width, tube_cut.cut_angle, 1.0, true);
+
+        // move by the laser offset distance
+        self.move_xy(&real_start, tube_cut.cut_feedrate);
 
         // enable plasma
         self.set_plasma_enabled(true);
