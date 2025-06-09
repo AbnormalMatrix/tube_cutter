@@ -28,7 +28,7 @@
   
 
 - Rust (latest stable): [Install Rust](https://www.rust-lang.org/tools/install)
-
+- Flutter (latest stable): [Install Flutter](https://flutter.dev/docs/get-started/install)
 - A serial-compatible CNC controller (e.g. GRBLHAL)
 
   
@@ -43,7 +43,7 @@ git  clone  https://github.com/AbnormalMatrix/tube_cutter
 
 cd  tube_cutter
 
-cargo  run  --release
+flutter run
 
 ```
 
