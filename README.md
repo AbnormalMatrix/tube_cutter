@@ -1,16 +1,50 @@
-# flutter_tube_cutter
 
-A new Flutter project.
+# Tube Cutter
 
-## Getting Started
+  
 
-This project is a starting point for a Flutter application.
+**Tube Cutter** is a lightweight CAM application written in Rust for generating and running G-code to cut square (and round) tubing using a CNC plasma cutter. It includes direct serial communication with the cutter.
 
-A few resources to get you started if this is your first Flutter project:
+  ## ✨ Features
+  * Generate grblHAL compatible G-codes that can cut straight lines.
+  * Calculate cuts based on given angles.
+  * Basic serial connection to machines.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 🎯 Goals
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [ ] **Realtime Toolhead Updates** - Monitor the live position of your CNC toolhead.
+- [ ] **Simulation Mode** - Preview G-code paths before sending them to the machine
+- [ ] **Tube Notching Support** - Design cut paths for square and round tubing 
+
+
+  
+
+## 📦 Installation
+
+  
+
+### Prerequisites
+
+  
+
+- Rust (latest stable): [Install Rust](https://www.rust-lang.org/tools/install)
+
+- A serial-compatible CNC controller (e.g. GRBLHAL)
+
+  
+
+### Clone the Repository
+
+  
+
+```bash
+
+git  clone  https://github.com/AbnormalMatrix/tube_cutter
+
+cd  tube_cutter
+
+cargo  run  --release
+
+```
+
+Phosphor Icons are licensed under MIT.
