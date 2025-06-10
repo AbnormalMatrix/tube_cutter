@@ -60,8 +60,8 @@ class _RunJobPageState extends State<RunJobPage> {
 
         break;
       case JogDist.one:
-        widget.machineConnection
-            .sendStringCommandLowPriority(command: jog(xDist: x, yDist: y));
+        widget.machineConnection.sendStringCommandLowPriority(
+            command: jog(xDist: x * 1.0, yDist: y * 1.0));
         break;
       case JogDist.ten:
         widget.machineConnection.sendStringCommandLowPriority(
