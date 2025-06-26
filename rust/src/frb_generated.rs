@@ -40,7 +40,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.10.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1180829617;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 2140841411;
 
 // Section: executor
 
@@ -2300,6 +2300,73 @@ fn wire__crate__api__gcode__calculate_end_pos_impl(
         },
     )
 }
+fn wire__crate__api__gcode__get_midpoint_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_midpoint",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_start_pos = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Pos2D>,
+            >>::sse_decode(&mut deserializer);
+            let api_end_pos = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Pos2D>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let mut api_start_pos_guard = None;
+                    let mut api_end_pos_guard = None;
+                    let decode_indices_ =
+                        flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                &api_start_pos,
+                                0,
+                                false,
+                            ),
+                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                &api_end_pos,
+                                1,
+                                false,
+                            ),
+                        ]);
+                    for i in decode_indices_ {
+                        match i {
+                            0 => {
+                                api_start_pos_guard = Some(api_start_pos.lockable_decode_sync_ref())
+                            }
+                            1 => api_end_pos_guard = Some(api_end_pos.lockable_decode_sync_ref()),
+                            _ => unreachable!(),
+                        }
+                    }
+                    let api_start_pos_guard = api_start_pos_guard.unwrap();
+                    let api_end_pos_guard = api_end_pos_guard.unwrap();
+                    let output_ok = Result::<_, ()>::Ok(crate::api::gcode::get_midpoint(
+                        &*api_start_pos_guard,
+                        &*api_end_pos_guard,
+                    ))?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__simple__get_serial_ports_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -2646,7 +2713,8 @@ fn pde_ffi_dispatcher_primary_impl(
             wire__crate__api__gcode__Pos2D_to_screen_space_impl(port, ptr, rust_vec_len, data_len)
         }
         46 => wire__crate__api__gcode__calculate_end_pos_impl(port, ptr, rust_vec_len, data_len),
-        49 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
+        47 => wire__crate__api__gcode__get_midpoint_impl(port, ptr, rust_vec_len, data_len),
+        50 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -2765,9 +2833,9 @@ fn pde_ffi_dispatcher_sync_impl(
         41 => wire__crate__api__gcode__Pos2D_auto_accessor_get_y_impl(ptr, rust_vec_len, data_len),
         42 => wire__crate__api__gcode__Pos2D_auto_accessor_set_x_impl(ptr, rust_vec_len, data_len),
         43 => wire__crate__api__gcode__Pos2D_auto_accessor_set_y_impl(ptr, rust_vec_len, data_len),
-        47 => wire__crate__api__simple__get_serial_ports_impl(ptr, rust_vec_len, data_len),
-        48 => wire__crate__api__simple__greet_impl(ptr, rust_vec_len, data_len),
-        50 => wire__crate__api__gcode__jog_impl(ptr, rust_vec_len, data_len),
+        48 => wire__crate__api__simple__get_serial_ports_impl(ptr, rust_vec_len, data_len),
+        49 => wire__crate__api__simple__greet_impl(ptr, rust_vec_len, data_len),
+        51 => wire__crate__api__gcode__jog_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }

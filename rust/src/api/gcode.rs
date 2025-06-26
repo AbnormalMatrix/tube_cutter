@@ -20,7 +20,12 @@ pub fn calculate_end_pos(start_pos: &Pos2D, tube_width: f32, cut_angle: f32, ove
     return Pos2D::new(end_x, end_y);
 }
 
+pub fn get_midpoint(start_pos: &Pos2D, end_pos: &Pos2D) -> Pos2D {
+    let avg_x = (start_pos.x + end_pos.x) / 2.0;
+    let avg_y = (start_pos.y + end_pos.y) / 2.0;
 
+    return Pos2D::new(avg_x, avg_y);
+}
 // units enum
 #[derive(PartialEq)]
 pub enum DistUnit {
@@ -146,6 +151,11 @@ impl Gcode {
         // move by the laser offset distance
         self.move_xy(&real_start, tube_cut.cut_feedrate);
 
+        let midpoint = get_midpoint(&real_start, &end_position);
+
+        // goto the midpoint
+        self.move_xy(&midpoint, tube_cut.cut_feedrate);
+
         // enable plasma
         self.set_plasma_enabled(true);
         // pierce delay
@@ -154,6 +164,21 @@ impl Gcode {
         self.move_xy(&end_position, tube_cut.cut_feedrate);
         // disable the plasma
         self.set_plasma_enabled(false);
+
+        // wait for cutter to stop blowing
+        self.dwell(2.0);
+        // go back to the midpoint
+        self.move_xy(&midpoint, tube_cut.cut_feedrate);
+
+        // enable plasma
+        self.set_plasma_enabled(true);
+        // pierce delay
+        self.dwell(tube_cut.pierce_delay);
+        // do the movement
+        self.move_xy(&real_start, tube_cut.cut_feedrate);
+        self.set_plasma_enabled(false);
+        self.move_xy(&tube_cut.start_position, tube_cut.cut_feedrate);
+
     }
     
 }

@@ -25,6 +25,12 @@ Future<Pos2D> calculateEndPos({
   cutRight: cutRight,
 );
 
+Future<Pos2D> getMidpoint({required Pos2D startPos, required Pos2D endPos}) =>
+    RustLib.instance.api.crateApiGcodeGetMidpoint(
+      startPos: startPos,
+      endPos: endPos,
+    );
+
 String jog({required double xDist, required double yDist}) =>
     RustLib.instance.api.crateApiGcodeJog(xDist: xDist, yDist: yDist);
 
