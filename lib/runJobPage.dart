@@ -7,8 +7,12 @@ import 'package:flutter_tube_cutter/src/rust/api/simple.dart';
 class RunJobPage extends StatefulWidget {
   final ValueNotifier<Gcode> gcode;
   final MachineConnection machineConnection;
+  final ValueNotifier<MachinePosition> machinePosition;
   const RunJobPage(
-      {super.key, required this.gcode, required this.machineConnection});
+      {super.key,
+      required this.gcode,
+      required this.machineConnection,
+      required this.machinePosition});
 
   @override
   State<RunJobPage> createState() => _RunJobPageState();
@@ -22,6 +26,13 @@ class _RunJobPageState extends State<RunJobPage> {
   bool isConnected = false;
 
   JogDist selectedJogDist = JogDist.one;
+
+  Stream<MachinePosition>? machinePosition;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void getSerialPortsPressed() {
     setState(() {
@@ -40,9 +51,12 @@ class _RunJobPageState extends State<RunJobPage> {
   }
 
   void connectToMachine() {
-    widget.machineConnection.makeConnection();
     setState(() {
+      // the makeConnection function has a StreamSink in it to update the gui, hence setting it here
+      machinePosition = widget.machineConnection.makeConnection();
       isConnected = true;
+      // need to get the position of the machine right after it is connected
+      widget.machineConnection.sendStringCommand(command: "?");
     });
   }
 
@@ -69,6 +83,7 @@ class _RunJobPageState extends State<RunJobPage> {
         break;
       default:
     }
+    widget.machineConnection.sendStringCommand(command: "?");
   }
 
   @override
@@ -113,16 +128,36 @@ class _RunJobPageState extends State<RunJobPage> {
             constraints: BoxConstraints(minWidth: 150, maxWidth: 400),
             child: Column(
               children: [
-                AxisInfoCard(
-                  axisColor: Colors.red,
-                  axisName: "X",
-                  axisValue: 0.00,
-                ),
-                AxisInfoCard(
-                  axisColor: Colors.green,
-                  axisName: "Y",
-                  axisValue: 0.00,
-                ),
+                (machinePosition != null)
+                    ? StreamBuilder<MachinePosition>(
+                        stream: machinePosition,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (!snapshot.hasData) {
+                            return Text('No data');
+                          }
+                          final pos = snapshot.data!;
+                          return Column(
+                            children: [
+                              AxisInfoCard(
+                                axisColor: Colors.red,
+                                axisName: "X",
+                                axisValue: pos.x,
+                              ),
+                              AxisInfoCard(
+                                axisColor: Colors.green,
+                                axisName: "Y",
+                                axisValue: pos.y,
+                              ),
+                            ],
+                          );
+                        },
+                      )
+                    : Text("No Connection"),
               ],
             ),
           ),

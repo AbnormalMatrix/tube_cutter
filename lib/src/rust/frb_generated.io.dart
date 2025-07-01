@@ -7,6 +7,7 @@ import 'api/cut.dart';
 import 'api/gcode.dart';
 import 'api/sender.dart';
 import 'api/simple.dart';
+import 'api/status.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -31,8 +32,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   get rust_arc_decrement_strong_count_MachineConnectionPtr => wire
       ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineConnectionPtr;
 
+  CrossPlatformFinalizerArg
+  get rust_arc_decrement_strong_count_MachineStatusPtr => wire
+      ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatusPtr;
+
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_Pos2DPtr => wire
       ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2DPtr;
+
+  @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw);
 
   @protected
   Cut
@@ -49,6 +57,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   MachineConnection
   dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineConnection(
+    dynamic raw,
+  );
+
+  @protected
+  MachineStatus
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
     dynamic raw,
   );
 
@@ -77,6 +91,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  MachineStatus
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    dynamic raw,
+  );
+
+  @protected
   Pos2D
   dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
     dynamic raw,
@@ -97,6 +117,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   MachineConnection
   dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineConnection(
+    dynamic raw,
+  );
+
+  @protected
+  MachineStatus
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
     dynamic raw,
   );
 
@@ -125,8 +151,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  MachineStatus
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    dynamic raw,
+  );
+
+  @protected
   Pos2D
   dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
+    dynamic raw,
+  );
+
+  @protected
+  RustStreamSink<MachinePosition> dco_decode_StreamSink_machine_position_Sse(
     dynamic raw,
   );
 
@@ -149,10 +186,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  MachinePosition dco_decode_machine_position(dynamic raw);
+
+  @protected
+  MachineState dco_decode_machine_state(dynamic raw);
+
+  @protected
   PositioningMode dco_decode_positioning_mode(dynamic raw);
 
   @protected
   (double, double) dco_decode_record_f_32_f_32(dynamic raw);
+
+  @protected
+  Rule dco_decode_rule(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -162,6 +208,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt dco_decode_usize(dynamic raw);
+
+  @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
   @protected
   Cut
@@ -178,6 +227,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   MachineConnection
   sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineConnection(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  MachineStatus
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
     SseDeserializer deserializer,
   );
 
@@ -206,6 +261,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  MachineStatus
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   Pos2D
   sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
     SseDeserializer deserializer,
@@ -226,6 +287,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   MachineConnection
   sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineConnection(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  MachineStatus
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
     SseDeserializer deserializer,
   );
 
@@ -254,8 +321,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  MachineStatus
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   Pos2D
   sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  RustStreamSink<MachinePosition> sse_decode_StreamSink_machine_position_Sse(
     SseDeserializer deserializer,
   );
 
@@ -278,10 +356,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  MachinePosition sse_decode_machine_position(SseDeserializer deserializer);
+
+  @protected
+  MachineState sse_decode_machine_state(SseDeserializer deserializer);
+
+  @protected
   PositioningMode sse_decode_positioning_mode(SseDeserializer deserializer);
 
   @protected
   (double, double) sse_decode_record_f_32_f_32(SseDeserializer deserializer);
+
+  @protected
+  Rule sse_decode_rule(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -291,6 +378,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt sse_decode_usize(SseDeserializer deserializer);
+
+  @protected
+  void sse_encode_AnyhowException(
+    AnyhowException self,
+    SseSerializer serializer,
+  );
 
   @protected
   void
@@ -310,6 +403,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
   sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineConnection(
     MachineConnection self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    MachineStatus self,
     SseSerializer serializer,
   );
 
@@ -343,6 +443,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    MachineStatus self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
   sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
     Pos2D self,
     SseSerializer serializer,
@@ -366,6 +473,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
   sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineConnection(
     MachineConnection self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    MachineStatus self,
     SseSerializer serializer,
   );
 
@@ -399,8 +513,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    MachineStatus self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
   sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
     Pos2D self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_StreamSink_machine_position_Sse(
+    RustStreamSink<MachinePosition> self,
     SseSerializer serializer,
   );
 
@@ -426,6 +553,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_machine_position(
+    MachinePosition self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_machine_state(MachineState self, SseSerializer serializer);
+
+  @protected
   void sse_encode_positioning_mode(
     PositioningMode self,
     SseSerializer serializer,
@@ -436,6 +572,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     (double, double) self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_rule(Rule self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
@@ -561,6 +700,40 @@ class RustLibWire implements BaseWire {
       );
   late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineConnection =
       _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineConnectionPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+  rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatusPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+        'frbgen_flutter_tube_cutter_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus',
+      );
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatusPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+  rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatusPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+        'frbgen_flutter_tube_cutter_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus',
+      );
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatusPtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 
   void

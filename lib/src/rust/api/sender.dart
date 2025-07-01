@@ -12,7 +12,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 abstract class MachineConnection implements RustOpaqueInterface {
   void home();
 
-  void makeConnection();
+  Stream<MachinePosition> makeConnection();
 
   factory MachineConnection() =>
       RustLib.instance.api.crateApiSenderMachineConnectionNew();
@@ -24,4 +24,25 @@ abstract class MachineConnection implements RustOpaqueInterface {
   void sendStringCommandLowPriority({required String command});
 
   void setSerialPort({required String newPort});
+}
+
+class MachinePosition {
+  final double x;
+  final double y;
+
+  const MachinePosition.raw({required this.x, required this.y});
+
+  factory MachinePosition() =>
+      RustLib.instance.api.crateApiSenderMachinePositionNew();
+
+  @override
+  int get hashCode => x.hashCode ^ y.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MachinePosition &&
+          runtimeType == other.runtimeType &&
+          x == other.x &&
+          y == other.y;
 }

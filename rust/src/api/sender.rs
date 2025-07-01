@@ -1,6 +1,23 @@
 use crossbeam_channel::{Sender, Receiver};
 use serial2::SerialPort;
 use std::{collections::LinkedList, task, thread::spawn};
+use std::sync::{Mutex, Arc};
+
+use crate::api::status::parse_status;
+use crate::frb_generated::StreamSink;
+
+// struct to store just the machine's position
+#[flutter_rust_bridge::frb]
+pub struct MachinePosition {
+    pub x: f32,
+    pub y: f32,
+}
+impl MachinePosition {
+    #[flutter_rust_bridge::frb(sync)]
+    pub fn new() -> Self {
+        Self { x: 0.0, y: 0.0 }
+    }
+}
 
 // struct to store everything related to the serial connection to the machine
 #[flutter_rust_bridge::frb(opaque)]
@@ -9,12 +26,14 @@ pub struct MachineConnection{
     baudrate: u32,
     serial_tx: Option<Sender<MachineCommand>>,
     serial_rx: Option<Receiver<String>>,
+
+    sink: Option<StreamSink<MachinePosition>>,
 }
 
 impl MachineConnection {
     #[flutter_rust_bridge::frb(sync)]
     pub fn new() -> Self {
-        Self { serial_port: "/dev/ttyUSB0".to_string(), baudrate: 115200, serial_tx: None, serial_rx: None }
+        Self { serial_port: "/dev/ttyUSB0".to_string(), baudrate: 115200, serial_tx: None, serial_rx: None, sink: None }
     }
 
     #[flutter_rust_bridge::frb(sync)]
@@ -53,8 +72,9 @@ impl MachineConnection {
         self.send_string_command("G1 X0 Y0 F1000".to_string());
     }
 
+
     #[flutter_rust_bridge::frb(sync)]
-    pub fn make_connection(&mut self) {
+    pub fn make_connection(&mut self, sink: StreamSink<MachinePosition>) {
         if self.serial_rx.is_none() {
             let (to_gui_tx, from_machine_rx) = crossbeam_channel::unbounded();
             
@@ -119,6 +139,13 @@ impl MachineConnection {
                                     if line == "ok" {
                                         println!("Ok!");
                                         command_completed = true;
+
+                                    } else if line.contains("<") {
+                                        // parse the status
+                                        println!("{}", line);
+                                        let status = parse_status(line.trim().to_string());
+                                        let pos = MachinePosition{ x: status.position.x, y: status.position.y };
+                                        sink.add(pos);
 
                                     }
 

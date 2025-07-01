@@ -7,6 +7,7 @@ import 'api/cut.dart';
 import 'api/gcode.dart';
 import 'api/sender.dart';
 import 'api/simple.dart';
+import 'api/status.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -67,7 +68,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.10.0';
 
   @override
-  int get rustContentHash => 2140841411;
+  int get rustContentHash => 1607051571;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -200,7 +201,7 @@ abstract class RustLibApi extends BaseApi {
 
   void crateApiSenderMachineConnectionHome({required MachineConnection that});
 
-  void crateApiSenderMachineConnectionMakeConnection({
+  Stream<MachinePosition> crateApiSenderMachineConnectionMakeConnection({
     required MachineConnection that,
   });
 
@@ -225,6 +226,26 @@ abstract class RustLibApi extends BaseApi {
     required MachineConnection that,
     required String newPort,
   });
+
+  MachineState crateApiStatusMachineStatusAutoAccessorGetMachineState({
+    required MachineStatus that,
+  });
+
+  Pos2D crateApiStatusMachineStatusAutoAccessorGetPosition({
+    required MachineStatus that,
+  });
+
+  void crateApiStatusMachineStatusAutoAccessorSetMachineState({
+    required MachineStatus that,
+    required MachineState machineState,
+  });
+
+  void crateApiStatusMachineStatusAutoAccessorSetPosition({
+    required MachineStatus that,
+    required Pos2D position,
+  });
+
+  Future<MachineStatus> crateApiStatusMachineStatusNew();
 
   double crateApiGcodePos2DAutoAccessorGetX({required Pos2D that});
 
@@ -269,6 +290,14 @@ abstract class RustLibApi extends BaseApi {
 
   String crateApiGcodeJog({required double xDist, required double yDist});
 
+  MachinePosition crateApiSenderMachinePositionNew();
+
+  Future<MachineStatus> crateApiStatusParseStatus({
+    required String statusString,
+  });
+
+  Future<void> crateApiStatusRuleAllRules();
+
   RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Cut;
 
   RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Cut;
@@ -289,6 +318,15 @@ abstract class RustLibApi extends BaseApi {
 
   CrossPlatformFinalizerArg
   get rust_arc_decrement_strong_count_MachineConnectionPtr;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_MachineStatus;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_MachineStatus;
+
+  CrossPlatformFinalizerArg
+  get rust_arc_decrement_strong_count_MachineStatusPtr;
 
   RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Pos2D;
 
@@ -1379,10 +1417,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  void crateApiSenderMachineConnectionMakeConnection({
+  Stream<MachinePosition> crateApiSenderMachineConnectionMakeConnection({
     required MachineConnection that,
   }) {
-    return handler.executeSync(
+    final sink = RustStreamSink<MachinePosition>();
+    handler.executeSync(
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -1390,6 +1429,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
+          sse_encode_StreamSink_machine_position_Sse(sink, serializer);
           return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 34)!;
         },
         codec: SseCodec(
@@ -1397,16 +1437,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeErrorData: null,
         ),
         constMeta: kCrateApiSenderMachineConnectionMakeConnectionConstMeta,
-        argValues: [that],
+        argValues: [that, sink],
         apiImpl: this,
       ),
     );
+    return sink.stream;
   }
 
   TaskConstMeta get kCrateApiSenderMachineConnectionMakeConnectionConstMeta =>
       const TaskConstMeta(
         debugName: "MachineConnection_make_connection",
-        argNames: ["that"],
+        argNames: ["that", "sink"],
       );
 
   @override
@@ -1568,6 +1609,172 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  MachineState crateApiStatusMachineStatusAutoAccessorGetMachineState({
+    required MachineStatus that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 40)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_machine_state,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiStatusMachineStatusAutoAccessorGetMachineStateConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiStatusMachineStatusAutoAccessorGetMachineStateConstMeta =>
+      const TaskConstMeta(
+        debugName: "MachineStatus_auto_accessor_get_machine_state",
+        argNames: ["that"],
+      );
+
+  @override
+  Pos2D crateApiStatusMachineStatusAutoAccessorGetPosition({
+    required MachineStatus that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 41)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiStatusMachineStatusAutoAccessorGetPositionConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiStatusMachineStatusAutoAccessorGetPositionConstMeta =>
+      const TaskConstMeta(
+        debugName: "MachineStatus_auto_accessor_get_position",
+        argNames: ["that"],
+      );
+
+  @override
+  void crateApiStatusMachineStatusAutoAccessorSetMachineState({
+    required MachineStatus that,
+    required MachineState machineState,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+            that,
+            serializer,
+          );
+          sse_encode_machine_state(machineState, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 42)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiStatusMachineStatusAutoAccessorSetMachineStateConstMeta,
+        argValues: [that, machineState],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiStatusMachineStatusAutoAccessorSetMachineStateConstMeta =>
+      const TaskConstMeta(
+        debugName: "MachineStatus_auto_accessor_set_machine_state",
+        argNames: ["that", "machineState"],
+      );
+
+  @override
+  void crateApiStatusMachineStatusAutoAccessorSetPosition({
+    required MachineStatus that,
+    required Pos2D position,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+            that,
+            serializer,
+          );
+          sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
+            position,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 43)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiStatusMachineStatusAutoAccessorSetPositionConstMeta,
+        argValues: [that, position],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiStatusMachineStatusAutoAccessorSetPositionConstMeta =>
+      const TaskConstMeta(
+        debugName: "MachineStatus_auto_accessor_set_position",
+        argNames: ["that", "position"],
+      );
+
+  @override
+  Future<MachineStatus> crateApiStatusMachineStatusNew() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 44,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiStatusMachineStatusNewConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiStatusMachineStatusNewConstMeta =>
+      const TaskConstMeta(debugName: "MachineStatus_new", argNames: []);
+
+  @override
   double crateApiGcodePos2DAutoAccessorGetX({required Pos2D that}) {
     return handler.executeSync(
       SyncTask(
@@ -1577,7 +1784,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 40)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 45)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_f_32,
@@ -1606,7 +1813,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 41)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 46)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_f_32,
@@ -1639,7 +1846,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_f_32(x, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 42)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 47)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1672,7 +1879,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_f_32(y, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 43)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 48)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1702,7 +1909,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 44,
+            funcId: 49,
             port: port_,
           );
         },
@@ -1740,7 +1947,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 45,
+            funcId: 50,
             port: port_,
           );
         },
@@ -1785,7 +1992,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 46,
+            funcId: 51,
             port: port_,
           );
         },
@@ -1833,7 +2040,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 47,
+            funcId: 52,
             port: port_,
           );
         },
@@ -1860,7 +2067,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 48)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 53)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_String,
@@ -1883,7 +2090,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_String(name, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 49)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 54)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -1908,7 +2115,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 50,
+            funcId: 55,
             port: port_,
           );
         },
@@ -1934,7 +2141,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_f_32(xDist, serializer);
           sse_encode_f_32(yDist, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 51)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 56)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -1949,6 +2156,88 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiGcodeJogConstMeta =>
       const TaskConstMeta(debugName: "jog", argNames: ["xDist", "yDist"]);
+
+  @override
+  MachinePosition crateApiSenderMachinePositionNew() {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 57)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_machine_position,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiSenderMachinePositionNewConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiSenderMachinePositionNewConstMeta =>
+      const TaskConstMeta(debugName: "machine_position_new", argNames: []);
+
+  @override
+  Future<MachineStatus> crateApiStatusParseStatus({
+    required String statusString,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(statusString, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 58,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiStatusParseStatusConstMeta,
+        argValues: [statusString],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiStatusParseStatusConstMeta => const TaskConstMeta(
+    debugName: "parse_status",
+    argNames: ["statusString"],
+  );
+
+  @override
+  Future<void> crateApiStatusRuleAllRules() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 59,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiStatusRuleAllRulesConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiStatusRuleAllRulesConstMeta =>
+      const TaskConstMeta(debugName: "rule_all_rules", argNames: []);
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_Cut => wire
@@ -1975,12 +2264,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineConnection;
 
   RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_MachineStatus => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_MachineStatus => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus;
+
+  RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_Pos2D => wire
       .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D;
 
   RustArcDecrementStrongCountFnType
   get rust_arc_decrement_strong_count_Pos2D => wire
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D;
+
+  @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AnyhowException(raw as String);
+  }
 
   @protected
   Cut
@@ -2007,6 +2310,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return MachineConnectionImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  MachineStatus
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return MachineStatusImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -2046,6 +2358,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MachineStatus
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return MachineStatusImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Pos2D
   dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
     dynamic raw,
@@ -2079,6 +2400,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return MachineConnectionImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  MachineStatus
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return MachineStatusImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -2118,12 +2448,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MachineStatus
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return MachineStatusImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Pos2D
   dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return Pos2DImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  RustStreamSink<MachinePosition> dco_decode_StreamSink_machine_position_Sse(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
   }
 
   @protected
@@ -2163,6 +2510,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MachinePosition dco_decode_machine_position(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return MachinePosition.raw(
+      x: dco_decode_f_32(arr[0]),
+      y: dco_decode_f_32(arr[1]),
+    );
+  }
+
+  @protected
+  MachineState dco_decode_machine_state(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return MachineState.values[raw as int];
+  }
+
+  @protected
   PositioningMode dco_decode_positioning_mode(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return PositioningMode.values[raw as int];
@@ -2176,6 +2541,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       throw Exception('Expected 2 elements, got ${arr.length}');
     }
     return (dco_decode_f_32(arr[0]), dco_decode_f_32(arr[1]));
+  }
+
+  @protected
+  Rule dco_decode_rule(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Rule.values[raw as int];
   }
 
   @protected
@@ -2194,6 +2565,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt dco_decode_usize(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeU64(raw);
+  }
+
+  @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_String(deserializer);
+    return AnyhowException(inner);
   }
 
   @protected
@@ -2227,6 +2605,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return MachineConnectionImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  MachineStatus
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return MachineStatusImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -2281,6 +2671,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MachineStatus
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return MachineStatusImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   Pos2D
   sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
     SseDeserializer deserializer,
@@ -2323,6 +2725,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return MachineConnectionImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  MachineStatus
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return MachineStatusImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -2377,6 +2791,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MachineStatus
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return MachineStatusImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   Pos2D
   sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
     SseDeserializer deserializer,
@@ -2386,6 +2812,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
+  }
+
+  @protected
+  RustStreamSink<MachinePosition> sse_decode_StreamSink_machine_position_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
   }
 
   @protected
@@ -2433,6 +2867,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MachinePosition sse_decode_machine_position(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_x = sse_decode_f_32(deserializer);
+    var var_y = sse_decode_f_32(deserializer);
+    return MachinePosition.raw(x: var_x, y: var_y);
+  }
+
+  @protected
+  MachineState sse_decode_machine_state(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return MachineState.values[inner];
+  }
+
+  @protected
   PositioningMode sse_decode_positioning_mode(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
@@ -2445,6 +2894,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_field0 = sse_decode_f_32(deserializer);
     var var_field1 = sse_decode_f_32(deserializer);
     return (var_field0, var_field1);
+  }
+
+  @protected
+  Rule sse_decode_rule(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return Rule.values[inner];
   }
 
   @protected
@@ -2462,6 +2918,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt sse_decode_usize(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
+  void sse_encode_AnyhowException(
+    AnyhowException self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.message, serializer);
   }
 
   @protected
@@ -2499,6 +2964,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as MachineConnectionImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    MachineStatus self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as MachineStatusImpl).frbInternalSseEncode(move: true),
       serializer,
     );
   }
@@ -2557,6 +3035,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    MachineStatus self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as MachineStatusImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
     Pos2D self,
     SseSerializer serializer,
@@ -2603,6 +3094,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as MachineConnectionImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    MachineStatus self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as MachineStatusImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -2661,6 +3165,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMachineStatus(
+    MachineStatus self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as MachineStatusImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPos2D(
     Pos2D self,
     SseSerializer serializer,
@@ -2668,6 +3185,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as Pos2DImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void sse_encode_StreamSink_machine_position_Sse(
+    RustStreamSink<MachinePosition> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_machine_position,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
       serializer,
     );
   }
@@ -2716,6 +3250,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_machine_position(
+    MachinePosition self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_32(self.x, serializer);
+    sse_encode_f_32(self.y, serializer);
+  }
+
+  @protected
+  void sse_encode_machine_state(MachineState self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
   void sse_encode_positioning_mode(
     PositioningMode self,
     SseSerializer serializer,
@@ -2732,6 +3282,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_f_32(self.$1, serializer);
     sse_encode_f_32(self.$2, serializer);
+  }
+
+  @protected
+  void sse_encode_rule(Rule self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected
@@ -2936,7 +3492,7 @@ class MachineConnectionImpl extends RustOpaque implements MachineConnection {
   void home() =>
       RustLib.instance.api.crateApiSenderMachineConnectionHome(that: this);
 
-  void makeConnection() => RustLib.instance.api
+  Stream<MachinePosition> makeConnection() => RustLib.instance.api
       .crateApiSenderMachineConnectionMakeConnection(that: this);
 
   void sendGcodeCommand({required String command}) =>
@@ -2963,6 +3519,44 @@ class MachineConnectionImpl extends RustOpaque implements MachineConnection {
       RustLib.instance.api.crateApiSenderMachineConnectionSetSerialPort(
         that: this,
         newPort: newPort,
+      );
+}
+
+@sealed
+class MachineStatusImpl extends RustOpaque implements MachineStatus {
+  // Not to be used by end users
+  MachineStatusImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  MachineStatusImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_MachineStatus,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_MachineStatus,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_MachineStatusPtr,
+  );
+
+  MachineState get machineState => RustLib.instance.api
+      .crateApiStatusMachineStatusAutoAccessorGetMachineState(that: this);
+
+  Pos2D get position => RustLib.instance.api
+      .crateApiStatusMachineStatusAutoAccessorGetPosition(that: this);
+
+  set machineState(MachineState machineState) => RustLib.instance.api
+      .crateApiStatusMachineStatusAutoAccessorSetMachineState(
+        that: this,
+        machineState: machineState,
+      );
+
+  set position(Pos2D position) =>
+      RustLib.instance.api.crateApiStatusMachineStatusAutoAccessorSetPosition(
+        that: this,
+        position: position,
       );
 }
 

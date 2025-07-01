@@ -34,6 +34,10 @@ class _MyAppState extends State<MyApp> {
   // it is here to remain alive while the app is open regardless of what page you are on
   MachineConnection machineConnection = MachineConnection();
 
+  // this is the machine's x and y coordinates in a value notifier so it can be subscribed to
+  ValueNotifier<MachinePosition> machinePosition =
+      ValueNotifier<MachinePosition>(MachinePosition());
+
   void onNavItemTapped(int index) {
     setState(() {
       selectedIndex = index;
@@ -69,6 +73,7 @@ class _MyAppState extends State<MyApp> {
                 RunJobPage(
                   gcode: gcode,
                   machineConnection: machineConnection,
+                  machinePosition: machinePosition,
                 ),
               ][selectedIndex],
             ),

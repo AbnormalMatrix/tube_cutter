@@ -11,6 +11,8 @@ flutter_rust_bridge = "=2.10.0"
 serial2 = "0.2.29"
 tokio = { version = "1.45.0", features = ["macros", "rt-multi-thread"] }
 crossbeam-channel = "0.5.15"
+pest = "2.8.1"
+pest_derive = "2.8.1"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
