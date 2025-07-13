@@ -141,7 +141,7 @@ impl Gcode {
     // add a cut to the gcode
 
     #[flutter_rust_bridge::frb(sync)]
-    pub fn add_cut(&mut self, tube_cut: Cut, cutter_settings: CutterSettings) {
+    pub fn add_cut(&mut self, tube_cut: Cut, cutter_settings: &CutterSettings) {
         // calculate the end position
 
         let mut real_start = Pos2D::new(&tube_cut.start_position.x + 40.0, tube_cut.start_position.y);
@@ -195,6 +195,6 @@ impl Gcode {
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn jog(x_dist: f32, y_dist: f32, cutter_settings: CutterSettings) -> String {
+pub fn jog(x_dist: f32, y_dist: f32, cutter_settings: &CutterSettings) -> String {
     format!("$J=G91 G21 X{} Y{} F{}", x_dist, y_dist, cutter_settings.jog_speed)
 }

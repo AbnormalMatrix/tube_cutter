@@ -1872,28 +1872,41 @@ fn wire__crate__api__gcode__Gcode_add_cut_impl(
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gcode>,
             >>::sse_decode(&mut deserializer);
             let api_tube_cut = <Cut>::sse_decode(&mut deserializer);
-            let api_cutter_settings = <CutterSettings>::sse_decode(&mut deserializer);
+            let api_cutter_settings = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CutterSettings>,
+            >>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
                 let mut api_that_guard = None;
+                let mut api_cutter_settings_guard = None;
                 let decode_indices_ =
                     flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
                         flutter_rust_bridge::for_generated::LockableOrderInfo::new(
                             &api_that, 0, true,
                         ),
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_cutter_settings,
+                            1,
+                            false,
+                        ),
                     ]);
                 for i in decode_indices_ {
                     match i {
                         0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                        1 => {
+                            api_cutter_settings_guard =
+                                Some(api_cutter_settings.lockable_decode_sync_ref())
+                        }
                         _ => unreachable!(),
                     }
                 }
                 let mut api_that_guard = api_that_guard.unwrap();
+                let api_cutter_settings_guard = api_cutter_settings_guard.unwrap();
                 let output_ok = Result::<_, ()>::Ok({
                     crate::api::gcode::Gcode::add_cut(
                         &mut *api_that_guard,
                         api_tube_cut,
-                        api_cutter_settings,
+                        &*api_cutter_settings_guard,
                     );
                 })?;
                 Ok(output_ok)
@@ -3558,13 +3571,34 @@ fn wire__crate__api__gcode__jog_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_x_dist = <f32>::sse_decode(&mut deserializer);
             let api_y_dist = <f32>::sse_decode(&mut deserializer);
-            let api_cutter_settings = <CutterSettings>::sse_decode(&mut deserializer);
+            let api_cutter_settings = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CutterSettings>,
+            >>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
+                let mut api_cutter_settings_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_cutter_settings,
+                            0,
+                            false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => {
+                            api_cutter_settings_guard =
+                                Some(api_cutter_settings.lockable_decode_sync_ref())
+                        }
+                        _ => unreachable!(),
+                    }
+                }
+                let api_cutter_settings_guard = api_cutter_settings_guard.unwrap();
                 let output_ok = Result::<_, ()>::Ok(crate::api::gcode::jog(
                     api_x_dist,
                     api_y_dist,
-                    api_cutter_settings,
+                    &*api_cutter_settings_guard,
                 ))?;
                 Ok(output_ok)
             })())
