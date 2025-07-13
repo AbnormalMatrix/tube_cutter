@@ -42,7 +42,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.10.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 2093527065;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -36696261;
 
 // Section: executor
 
@@ -1050,6 +1050,52 @@ fn wire__crate__api__cut__Cut_set_tube_width_impl(
         },
     )
 }
+fn wire__crate__api__settings__CutterSettings_auto_accessor_get_clear_existing_gcode_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "CutterSettings_auto_accessor_get_clear_existing_gcode",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CutterSettings>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok(api_that_guard.clear_existing_gcode.clone())?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
 fn wire__crate__api__settings__CutterSettings_auto_accessor_get_cut_method_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -1321,6 +1367,57 @@ fn wire__crate__api__settings__CutterSettings_auto_accessor_get_use_laser_impl(
                 }
                 let api_that_guard = api_that_guard.unwrap();
                 let output_ok = Result::<_, ()>::Ok(api_that_guard.use_laser.clone())?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__settings__CutterSettings_auto_accessor_set_clear_existing_gcode_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "CutterSettings_auto_accessor_set_clear_existing_gcode",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CutterSettings>,
+            >>::sse_decode(&mut deserializer);
+            let api_clear_existing_gcode = <bool>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, true,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                        _ => unreachable!(),
+                    }
+                }
+                let mut api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok({
+                    {
+                        api_that_guard.clear_existing_gcode = api_clear_existing_gcode;
+                    };
+                })?;
                 Ok(output_ok)
             })())
         },
@@ -2497,24 +2594,41 @@ fn wire__crate__api__sender__MachineConnection_home_impl(
             let api_that = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<MachineConnection>,
             >>::sse_decode(&mut deserializer);
+            let api_cutter_settings = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CutterSettings>,
+            >>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
                 let mut api_that_guard = None;
+                let mut api_cutter_settings_guard = None;
                 let decode_indices_ =
                     flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
                         flutter_rust_bridge::for_generated::LockableOrderInfo::new(
                             &api_that, 0, false,
                         ),
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_cutter_settings,
+                            1,
+                            false,
+                        ),
                     ]);
                 for i in decode_indices_ {
                     match i {
                         0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        1 => {
+                            api_cutter_settings_guard =
+                                Some(api_cutter_settings.lockable_decode_sync_ref())
+                        }
                         _ => unreachable!(),
                     }
                 }
                 let api_that_guard = api_that_guard.unwrap();
+                let api_cutter_settings_guard = api_cutter_settings_guard.unwrap();
                 let output_ok = Result::<_, ()>::Ok({
-                    crate::api::sender::MachineConnection::home(&*api_that_guard);
+                    crate::api::sender::MachineConnection::home(
+                        &*api_that_guard,
+                        &*api_cutter_settings_guard,
+                    );
                 })?;
                 Ok(output_ok)
             })())
@@ -4027,40 +4141,40 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        37 => wire__crate__api__gcode__Gcode_add_command_impl(port, ptr, rust_vec_len, data_len),
-        38 => wire__crate__api__gcode__Gcode_add_command_comment_impl(
+        39 => wire__crate__api__gcode__Gcode_add_command_impl(port, ptr, rust_vec_len, data_len),
+        40 => wire__crate__api__gcode__Gcode_add_command_comment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        42 => wire__crate__api__gcode__Gcode_dwell_impl(port, ptr, rust_vec_len, data_len),
-        44 => wire__crate__api__gcode__Gcode_home2D_impl(port, ptr, rust_vec_len, data_len),
-        45 => wire__crate__api__gcode__Gcode_move_xy_impl(port, ptr, rust_vec_len, data_len),
-        47 => wire__crate__api__gcode__Gcode_set_plasma_enabled_impl(
+        44 => wire__crate__api__gcode__Gcode_dwell_impl(port, ptr, rust_vec_len, data_len),
+        46 => wire__crate__api__gcode__Gcode_home2D_impl(port, ptr, rust_vec_len, data_len),
+        47 => wire__crate__api__gcode__Gcode_move_xy_impl(port, ptr, rust_vec_len, data_len),
+        49 => wire__crate__api__gcode__Gcode_set_plasma_enabled_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        48 => wire__crate__api__gcode__Gcode_set_positioning_mode_impl(
+        50 => wire__crate__api__gcode__Gcode_set_positioning_mode_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        49 => wire__crate__api__gcode__Gcode_set_zero_impl(port, ptr, rust_vec_len, data_len),
-        50 => wire__crate__api__gcode__Gcode_write_to_file_impl(port, ptr, rust_vec_len, data_len),
-        62 => wire__crate__api__status__MachineStatus_new_impl(port, ptr, rust_vec_len, data_len),
-        67 => wire__crate__api__gcode__Pos2D_new_impl(port, ptr, rust_vec_len, data_len),
-        68 => {
+        51 => wire__crate__api__gcode__Gcode_set_zero_impl(port, ptr, rust_vec_len, data_len),
+        52 => wire__crate__api__gcode__Gcode_write_to_file_impl(port, ptr, rust_vec_len, data_len),
+        64 => wire__crate__api__status__MachineStatus_new_impl(port, ptr, rust_vec_len, data_len),
+        69 => wire__crate__api__gcode__Pos2D_new_impl(port, ptr, rust_vec_len, data_len),
+        70 => {
             wire__crate__api__gcode__Pos2D_to_screen_space_impl(port, ptr, rust_vec_len, data_len)
         }
-        69 => wire__crate__api__gcode__calculate_end_pos_impl(port, ptr, rust_vec_len, data_len),
-        70 => wire__crate__api__gcode__get_midpoint_impl(port, ptr, rust_vec_len, data_len),
-        73 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
-        76 => wire__crate__api__status__parse_status_impl(port, ptr, rust_vec_len, data_len),
-        77 => wire__crate__api__status__rule_all_rules_impl(port, ptr, rust_vec_len, data_len),
+        71 => wire__crate__api__gcode__calculate_end_pos_impl(port, ptr, rust_vec_len, data_len),
+        72 => wire__crate__api__gcode__get_midpoint_impl(port, ptr, rust_vec_len, data_len),
+        75 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
+        78 => wire__crate__api__status__parse_status_impl(port, ptr, rust_vec_len, data_len),
+        79 => wire__crate__api__status__rule_all_rules_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -4146,137 +4260,151 @@ fn pde_ffi_dispatcher_sync_impl(
         19 => wire__crate__api__cut__Cut_set_pierce_delay_impl(ptr, rust_vec_len, data_len),
         20 => wire__crate__api__cut__Cut_set_pierce_delay_2_impl(ptr, rust_vec_len, data_len),
         21 => wire__crate__api__cut__Cut_set_tube_width_impl(ptr, rust_vec_len, data_len),
-        22 => wire__crate__api__settings__CutterSettings_auto_accessor_get_cut_method_impl(
+        22 => {
+            wire__crate__api__settings__CutterSettings_auto_accessor_get_clear_existing_gcode_impl(
+                ptr,
+                rust_vec_len,
+                data_len,
+            )
+        }
+        23 => wire__crate__api__settings__CutterSettings_auto_accessor_get_cut_method_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        23 => wire__crate__api__settings__CutterSettings_auto_accessor_get_home_after_cut_impl(
+        24 => wire__crate__api__settings__CutterSettings_auto_accessor_get_home_after_cut_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        24 => wire__crate__api__settings__CutterSettings_auto_accessor_get_jog_speed_impl(
+        25 => wire__crate__api__settings__CutterSettings_auto_accessor_get_jog_speed_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        25 => wire__crate__api__settings__CutterSettings_auto_accessor_get_laser_offset_x_impl(
+        26 => wire__crate__api__settings__CutterSettings_auto_accessor_get_laser_offset_x_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        26 => wire__crate__api__settings__CutterSettings_auto_accessor_get_laser_offset_y_impl(
+        27 => wire__crate__api__settings__CutterSettings_auto_accessor_get_laser_offset_y_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        27 => wire__crate__api__settings__CutterSettings_auto_accessor_get_use_laser_impl(
+        28 => wire__crate__api__settings__CutterSettings_auto_accessor_get_use_laser_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        28 => wire__crate__api__settings__CutterSettings_auto_accessor_set_cut_method_impl(
+        29 => {
+            wire__crate__api__settings__CutterSettings_auto_accessor_set_clear_existing_gcode_impl(
+                ptr,
+                rust_vec_len,
+                data_len,
+            )
+        }
+        30 => wire__crate__api__settings__CutterSettings_auto_accessor_set_cut_method_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        29 => wire__crate__api__settings__CutterSettings_auto_accessor_set_home_after_cut_impl(
+        31 => wire__crate__api__settings__CutterSettings_auto_accessor_set_home_after_cut_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        30 => wire__crate__api__settings__CutterSettings_auto_accessor_set_jog_speed_impl(
+        32 => wire__crate__api__settings__CutterSettings_auto_accessor_set_jog_speed_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        31 => wire__crate__api__settings__CutterSettings_auto_accessor_set_laser_offset_x_impl(
+        33 => wire__crate__api__settings__CutterSettings_auto_accessor_set_laser_offset_x_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        32 => wire__crate__api__settings__CutterSettings_auto_accessor_set_laser_offset_y_impl(
+        34 => wire__crate__api__settings__CutterSettings_auto_accessor_set_laser_offset_y_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        33 => wire__crate__api__settings__CutterSettings_auto_accessor_set_use_laser_impl(
+        35 => wire__crate__api__settings__CutterSettings_auto_accessor_set_use_laser_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        34 => wire__crate__api__settings__CutterSettings_load_impl(ptr, rust_vec_len, data_len),
-        35 => wire__crate__api__settings__CutterSettings_new_impl(ptr, rust_vec_len, data_len),
-        36 => wire__crate__api__settings__CutterSettings_save_impl(ptr, rust_vec_len, data_len),
-        39 => wire__crate__api__gcode__Gcode_add_cut_impl(ptr, rust_vec_len, data_len),
-        40 => wire__crate__api__gcode__Gcode_auto_accessor_get_gcode_string_impl(
+        36 => wire__crate__api__settings__CutterSettings_load_impl(ptr, rust_vec_len, data_len),
+        37 => wire__crate__api__settings__CutterSettings_new_impl(ptr, rust_vec_len, data_len),
+        38 => wire__crate__api__settings__CutterSettings_save_impl(ptr, rust_vec_len, data_len),
+        41 => wire__crate__api__gcode__Gcode_add_cut_impl(ptr, rust_vec_len, data_len),
+        42 => wire__crate__api__gcode__Gcode_auto_accessor_get_gcode_string_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        41 => wire__crate__api__gcode__Gcode_auto_accessor_set_gcode_string_impl(
+        43 => wire__crate__api__gcode__Gcode_auto_accessor_set_gcode_string_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        43 => wire__crate__api__gcode__Gcode_get_gcode_string_impl(ptr, rust_vec_len, data_len),
-        46 => wire__crate__api__gcode__Gcode_new_impl(ptr, rust_vec_len, data_len),
-        51 => wire__crate__api__sender__MachineConnection_home_impl(ptr, rust_vec_len, data_len),
-        52 => wire__crate__api__sender__MachineConnection_make_connection_impl(
+        45 => wire__crate__api__gcode__Gcode_get_gcode_string_impl(ptr, rust_vec_len, data_len),
+        48 => wire__crate__api__gcode__Gcode_new_impl(ptr, rust_vec_len, data_len),
+        53 => wire__crate__api__sender__MachineConnection_home_impl(ptr, rust_vec_len, data_len),
+        54 => wire__crate__api__sender__MachineConnection_make_connection_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        53 => wire__crate__api__sender__MachineConnection_new_impl(ptr, rust_vec_len, data_len),
-        54 => wire__crate__api__sender__MachineConnection_send_gcode_command_impl(
+        55 => wire__crate__api__sender__MachineConnection_new_impl(ptr, rust_vec_len, data_len),
+        56 => wire__crate__api__sender__MachineConnection_send_gcode_command_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        55 => wire__crate__api__sender__MachineConnection_send_string_command_impl(
+        57 => wire__crate__api__sender__MachineConnection_send_string_command_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        56 => wire__crate__api__sender__MachineConnection_send_string_command_low_priority_impl(
+        58 => wire__crate__api__sender__MachineConnection_send_string_command_low_priority_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        57 => wire__crate__api__sender__MachineConnection_set_serial_port_impl(
+        59 => wire__crate__api__sender__MachineConnection_set_serial_port_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        58 => wire__crate__api__status__MachineStatus_auto_accessor_get_machine_state_impl(
+        60 => wire__crate__api__status__MachineStatus_auto_accessor_get_machine_state_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        59 => wire__crate__api__status__MachineStatus_auto_accessor_get_position_impl(
+        61 => wire__crate__api__status__MachineStatus_auto_accessor_get_position_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        60 => wire__crate__api__status__MachineStatus_auto_accessor_set_machine_state_impl(
+        62 => wire__crate__api__status__MachineStatus_auto_accessor_set_machine_state_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        61 => wire__crate__api__status__MachineStatus_auto_accessor_set_position_impl(
+        63 => wire__crate__api__status__MachineStatus_auto_accessor_set_position_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        63 => wire__crate__api__gcode__Pos2D_auto_accessor_get_x_impl(ptr, rust_vec_len, data_len),
-        64 => wire__crate__api__gcode__Pos2D_auto_accessor_get_y_impl(ptr, rust_vec_len, data_len),
-        65 => wire__crate__api__gcode__Pos2D_auto_accessor_set_x_impl(ptr, rust_vec_len, data_len),
-        66 => wire__crate__api__gcode__Pos2D_auto_accessor_set_y_impl(ptr, rust_vec_len, data_len),
-        71 => wire__crate__api__simple__get_serial_ports_impl(ptr, rust_vec_len, data_len),
-        72 => wire__crate__api__simple__greet_impl(ptr, rust_vec_len, data_len),
-        74 => wire__crate__api__gcode__jog_impl(ptr, rust_vec_len, data_len),
-        75 => wire__crate__api__sender__machine_position_new_impl(ptr, rust_vec_len, data_len),
+        65 => wire__crate__api__gcode__Pos2D_auto_accessor_get_x_impl(ptr, rust_vec_len, data_len),
+        66 => wire__crate__api__gcode__Pos2D_auto_accessor_get_y_impl(ptr, rust_vec_len, data_len),
+        67 => wire__crate__api__gcode__Pos2D_auto_accessor_set_x_impl(ptr, rust_vec_len, data_len),
+        68 => wire__crate__api__gcode__Pos2D_auto_accessor_set_y_impl(ptr, rust_vec_len, data_len),
+        73 => wire__crate__api__simple__get_serial_ports_impl(ptr, rust_vec_len, data_len),
+        74 => wire__crate__api__simple__greet_impl(ptr, rust_vec_len, data_len),
+        76 => wire__crate__api__gcode__jog_impl(ptr, rust_vec_len, data_len),
+        77 => wire__crate__api__sender__machine_position_new_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }

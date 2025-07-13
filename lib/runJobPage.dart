@@ -205,7 +205,7 @@ class _RunJobPageState extends State<RunJobPage> {
       ),
       ElevatedButton.icon(
         onPressed: () {
-          widget.machineConnection.home();
+          widget.machineConnection.home(cutterSettings: widget.cutterSettings);
         },
         label: Text("Home"),
         icon: Icon(Icons.home),

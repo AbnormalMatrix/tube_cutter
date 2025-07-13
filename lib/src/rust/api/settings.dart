@@ -13,6 +13,8 @@ abstract class CutMethod implements RustOpaqueInterface {}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CutterSettings>>
 abstract class CutterSettings implements RustOpaqueInterface {
+  bool get clearExistingGcode;
+
   CutMethod get cutMethod;
 
   bool get homeAfterCut;
@@ -24,6 +26,8 @@ abstract class CutterSettings implements RustOpaqueInterface {
   double get laserOffsetY;
 
   bool get useLaser;
+
+  set clearExistingGcode(bool clearExistingGcode);
 
   set cutMethod(CutMethod cutMethod);
 

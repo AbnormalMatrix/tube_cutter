@@ -47,36 +47,67 @@ class _SettingsPageState extends State<SettingsPage> {
     widget.cutterSettings.save();
   }
 
+  void onEditClearGcode(bool newValue) {
+    widget.cutterSettings.clearExistingGcode = newValue;
+    widget.cutterSettings.save();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SettingsToggleItem(
-          settingName: "Home After Cut",
-          settingValue: widget.cutterSettings.homeAfterCut,
-          onToggle: onToggleHomeAfterCut,
+        Tooltip(
+          message: "Home the toolhead after the cut",
+          child: SettingsToggleItem(
+            settingName: "Home After Cut",
+            settingValue: widget.cutterSettings.homeAfterCut,
+            onToggle: onToggleHomeAfterCut,
+          ),
         ),
-        SettingsItem(
-          settingName: "Jog Speed",
-          settingValue: widget.cutterSettings.jogSpeed,
-          onEditFunc: onEditJogSpeed,
+        Tooltip(
+          message: "Clear the existing gcode when adding a new cut",
+          child: SettingsToggleItem(
+            settingName: "Clear Gcode On New Cut",
+            settingValue: widget.cutterSettings.clearExistingGcode,
+            onToggle: onEditClearGcode,
+          ),
         ),
-        SettingsToggleItem(
-          settingName: "Use Laser",
-          settingValue: widget.cutterSettings.useLaser,
-          onToggle: onToggleLaser,
+        Tooltip(
+          message:
+              "The speed of jogging the machine in mm/min. Also sets the homing speed",
+          child: SettingsItem(
+            settingName: "Jog Speed",
+            settingValue: widget.cutterSettings.jogSpeed,
+            onEditFunc: onEditJogSpeed,
+          ),
         ),
-        SettingsItem(
-          settingName: "Laser Offset X",
-          settingValue: widget.cutterSettings.laserOffsetX,
-          onEditFunc: onEditLaserX,
+        Tooltip(
+          message:
+              "Use a laser pointer (possibly offset from the toolhead) for alignment",
+          child: SettingsToggleItem(
+            settingName: "Use Laser",
+            settingValue: widget.cutterSettings.useLaser,
+            onToggle: onToggleLaser,
+          ),
         ),
-        SettingsItem(
-          settingName: "Laser Offset Y",
-          settingValue: widget.cutterSettings.laserOffsetY,
-          onEditFunc: onEditLaserY,
+        Tooltip(
+          message:
+              "If using a laser pointer for alignment, this sets the x axis offset from the toolhead",
+          child: SettingsItem(
+            settingName: "Laser Offset X",
+            settingValue: widget.cutterSettings.laserOffsetX,
+            onEditFunc: onEditLaserX,
+          ),
         ),
+        Tooltip(
+            message:
+                "If using a laser pointer for alignment, this sets the x axis offset from the toolhead",
+            child: SettingsItem(
+              settingName: "Laser Offset Y",
+              settingValue: widget.cutterSettings.laserOffsetY,
+              onEditFunc: onEditLaserY,
+            )),
       ],
     );
   }

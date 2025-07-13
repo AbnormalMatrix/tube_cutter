@@ -3,6 +3,7 @@ use serial2::SerialPort;
 use std::{collections::LinkedList, task, thread::spawn};
 use std::sync::{Mutex, Arc};
 
+use crate::api::settings::CutterSettings;
 use crate::api::status::parse_status;
 use crate::frb_generated::StreamSink;
 
@@ -68,8 +69,8 @@ impl MachineConnection {
     }
 
     #[flutter_rust_bridge::frb(sync)]
-    pub fn home(&self) {
-        self.send_string_command("G1 X0 Y0 F1000".to_string());
+    pub fn home(&self, cutter_settings: &CutterSettings) {
+        self.send_string_command(format!("G1 X0 Y0 F{}", cutter_settings.jog_speed));
     }
 
 
@@ -117,6 +118,8 @@ impl MachineConnection {
                                 }
                             }
                         }
+                        // add a ? command to get the machine info after every command
+                        buffered_commands.push_back("?".to_string());
                     }
 
                     // check if there are any commands in buffered_commands to send to the machine

@@ -1,1 +1,1 @@
-{"cut_method":"Split","use_laser":false,"laser_offset_x":0.0,"laser_offset_y":0.0,"home_after_cut":true,"jog_speed":600.0}
+{"cut_method":"Split","use_laser":false,"laser_offset_x":0.0,"laser_offset_y":0.0,"home_after_cut":true,"jog_speed":600.0,"clear_existing_gcode":true}

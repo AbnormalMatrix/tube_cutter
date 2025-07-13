@@ -5,12 +5,13 @@
 
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'settings.dart';
 
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `MachineCommand`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<MachineConnection>>
 abstract class MachineConnection implements RustOpaqueInterface {
-  void home();
+  void home({required CutterSettings cutterSettings});
 
   Stream<MachinePosition> makeConnection();
 

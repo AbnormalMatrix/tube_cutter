@@ -196,5 +196,5 @@ impl Gcode {
 
 #[flutter_rust_bridge::frb(sync)]
 pub fn jog(x_dist: f32, y_dist: f32, cutter_settings: &CutterSettings) -> String {
-    format!("$J=G91 G21 X{} Y{} F{}", x_dist, y_dist, cutter_settings.jog_speed)
+    format!("$J=G91 G21 X{} Y{} F{}\n?", x_dist, y_dist, cutter_settings.jog_speed)
 }
