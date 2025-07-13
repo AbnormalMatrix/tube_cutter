@@ -32,8 +32,15 @@ Future<Pos2D> getMidpoint({required Pos2D startPos, required Pos2D endPos}) =>
       endPos: endPos,
     );
 
-String jog({required double xDist, required double yDist}) =>
-    RustLib.instance.api.crateApiGcodeJog(xDist: xDist, yDist: yDist);
+String jog({
+  required double xDist,
+  required double yDist,
+  required CutterSettings cutterSettings,
+}) => RustLib.instance.api.crateApiGcodeJog(
+  xDist: xDist,
+  yDist: yDist,
+  cutterSettings: cutterSettings,
+);
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Gcode>>
 abstract class Gcode implements RustOpaqueInterface {

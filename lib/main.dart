@@ -75,6 +75,7 @@ class _MyAppState extends State<MyApp> {
                   gcode: gcode,
                   machineConnection: machineConnection,
                   machinePosition: machinePosition,
+                  cutterSettings: cutterSettings,
                 ),
               ][selectedIndex],
             ),

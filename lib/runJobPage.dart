@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tube_cutter/src/rust/api/gcode.dart';
 import 'package:flutter_tube_cutter/src/rust/api/sender.dart';
+import 'package:flutter_tube_cutter/src/rust/api/settings.dart';
 import 'package:flutter_tube_cutter/src/rust/api/simple.dart';
 
 class RunJobPage extends StatefulWidget {
   final ValueNotifier<Gcode> gcode;
   final MachineConnection machineConnection;
   final ValueNotifier<MachinePosition> machinePosition;
-  const RunJobPage(
-      {super.key,
-      required this.gcode,
-      required this.machineConnection,
-      required this.machinePosition});
+  final CutterSettings cutterSettings;
+  const RunJobPage({
+    super.key,
+    required this.gcode,
+    required this.machineConnection,
+    required this.machinePosition,
+    required this.cutterSettings,
+  });
 
   @override
   State<RunJobPage> createState() => _RunJobPageState();
@@ -70,16 +74,25 @@ class _RunJobPageState extends State<RunJobPage> {
     switch (selectedJogDist) {
       case JogDist.pointOne:
         widget.machineConnection.sendStringCommandLowPriority(
-            command: jog(xDist: x * 0.1, yDist: y * 0.1));
+            command: jog(
+                xDist: x * 0.1,
+                yDist: y * 0.1,
+                cutterSettings: widget.cutterSettings));
 
         break;
       case JogDist.one:
         widget.machineConnection.sendStringCommandLowPriority(
-            command: jog(xDist: x * 1.0, yDist: y * 1.0));
+            command: jog(
+                xDist: x * 1.0,
+                yDist: y * 1.0,
+                cutterSettings: widget.cutterSettings));
         break;
       case JogDist.ten:
         widget.machineConnection.sendStringCommandLowPriority(
-            command: jog(xDist: x * 10.0, yDist: y * 10.0));
+            command: jog(
+                xDist: x * 10.0,
+                yDist: y * 10.0,
+                cutterSettings: widget.cutterSettings));
         break;
       default:
     }

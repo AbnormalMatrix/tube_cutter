@@ -19,6 +19,8 @@ abstract class Cut implements RustOpaqueInterface {
 
   double get pierceDelay;
 
+  double get pierceDelay2;
+
   Pos2D get startPosition;
 
   double get tubeWidth;
@@ -30,6 +32,8 @@ abstract class Cut implements RustOpaqueInterface {
   set endPosition(Pos2D endPosition);
 
   set pierceDelay(double pierceDelay);
+
+  set pierceDelay2(double pierceDelay2);
 
   set startPosition(Pos2D startPosition);
 
@@ -44,6 +48,8 @@ abstract class Cut implements RustOpaqueInterface {
   void setCutFeedrate({required double newFeedrate});
 
   void setPierceDelay({required double newDelay});
+
+  void setPierceDelay2({required double newDelay});
 
   void setTubeWidth({required double newWidth});
 }

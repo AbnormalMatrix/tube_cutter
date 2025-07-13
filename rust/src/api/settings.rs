@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 // cut method (straight/split)
 // use laser (on/off)
 // laser offset (x,y)
+// home after cut (on/off)
+// jog speed (num)
 #[derive(Serialize, Deserialize)]
 #[derive(Clone)]
 #[flutter_rust_bridge::frb(opaque)]
@@ -23,6 +25,10 @@ pub struct CutterSettings {
     pub use_laser: bool,
     pub laser_offset_x: f32,
     pub laser_offset_y: f32,
+
+    pub home_after_cut: bool,
+    
+    pub jog_speed: f32,
 }
 
 
@@ -50,7 +56,7 @@ impl CutterSettings {
             let settings: Self = serde_json::from_str(&contents).expect("Failed to parse settings file!");
             return settings;
         } else {
-            let settings = Self { cut_method: CutMethod::Split, use_laser: false, laser_offset_x: 0.0, laser_offset_y: 0.0 };
+            let settings = Self { cut_method: CutMethod::Split, use_laser: false, laser_offset_x: 0.0, laser_offset_y: 0.0, home_after_cut: true, jog_speed: 600.0 };
             // save the new file
             let contents = serde_json::to_string(&settings).expect("Failed to serialize settings!");
             fs::write(settings_path, contents).expect("Failed to write settings file!");

@@ -15,6 +15,10 @@ abstract class CutMethod implements RustOpaqueInterface {}
 abstract class CutterSettings implements RustOpaqueInterface {
   CutMethod get cutMethod;
 
+  bool get homeAfterCut;
+
+  double get jogSpeed;
+
   double get laserOffsetX;
 
   double get laserOffsetY;
@@ -22,6 +26,10 @@ abstract class CutterSettings implements RustOpaqueInterface {
   bool get useLaser;
 
   set cutMethod(CutMethod cutMethod);
+
+  set homeAfterCut(bool homeAfterCut);
+
+  set jogSpeed(double jogSpeed);
 
   set laserOffsetX(double laserOffsetX);
 

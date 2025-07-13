@@ -67,6 +67,14 @@ class _TunePageState extends State<TunePage> {
     });
   }
 
+  void onEnterPierceDelay2(String newNum) {
+    setState(() {
+      pierceDelay = num.parse(newNum);
+      // update the cut object
+      tubeCut.setPierceDelay2(newDelay: pierceDelay.toDouble());
+    });
+  }
+
   void onAddCut() {
     if (tubeCut.isDisposed) {
       tubeCut = Cut();
@@ -161,6 +169,33 @@ class _TunePageState extends State<TunePage> {
                     child: TextField(
                       keyboardType: TextInputType.number,
                       onChanged: onEnterPierceDelay,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'^[0-9]+\.?[0-9]*'))
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Tooltip(
+              message:
+                  "The amount of time in seconds after the plasma is enabled that the toolhead starts moving on the second cut",
+              child: Row(
+                children: [
+                  const SizedBox(
+                    width: 120,
+                    child: Text(
+                      "Pierce Delay 2",
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                  const VerticalDivider(),
+                  SizedBox(
+                    width: 250,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      onChanged: onEnterPierceDelay2,
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(
                             RegExp(r'^[0-9]+\.?[0-9]*'))

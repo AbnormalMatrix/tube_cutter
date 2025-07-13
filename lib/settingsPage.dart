@@ -35,11 +35,33 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
+  void onToggleHomeAfterCut(bool newValue) {
+    setState(() {
+      widget.cutterSettings.homeAfterCut = newValue;
+      widget.cutterSettings.save();
+    });
+  }
+
+  void onEditJogSpeed(String newValue) {
+    widget.cutterSettings.jogSpeed = double.parse(newValue);
+    widget.cutterSettings.save();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SettingsToggleItem(
+          settingName: "Home After Cut",
+          settingValue: widget.cutterSettings.homeAfterCut,
+          onToggle: onToggleHomeAfterCut,
+        ),
+        SettingsItem(
+          settingName: "Jog Speed",
+          settingValue: widget.cutterSettings.jogSpeed,
+          onEditFunc: onEditJogSpeed,
+        ),
         SettingsToggleItem(
           settingName: "Use Laser",
           settingValue: widget.cutterSettings.useLaser,

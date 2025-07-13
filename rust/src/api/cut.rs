@@ -12,6 +12,7 @@ pub struct Cut {
     pub cut_angle: f32,
     pub cut_feedrate: f32,
     pub pierce_delay: f32,
+    pub pierce_delay_2: f32,
 }
 
 #[flutter_rust_bridge::frb]
@@ -29,6 +30,7 @@ impl Cut {
             cut_angle: 90.0,
             cut_feedrate: 1000.0,
             pierce_delay: 0.5,
+            pierce_delay_2: 0.25,
         }
     }
 
@@ -51,6 +53,11 @@ impl Cut {
     #[flutter_rust_bridge::frb(sync)]
     pub fn set_pierce_delay(&mut self, new_delay: f32) {
         self.pierce_delay = new_delay;
+    }
+    
+    #[flutter_rust_bridge::frb(sync)]
+    pub fn set_pierce_delay_2(&mut self, new_delay: f32) {
+        self.pierce_delay_2 = new_delay;
     }
 
     #[flutter_rust_bridge::frb(sync)]

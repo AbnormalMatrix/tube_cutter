@@ -179,17 +179,22 @@ impl Gcode {
         // enable plasma
         self.set_plasma_enabled(true);
         // pierce delay
-        self.dwell(tube_cut.pierce_delay);
+        self.dwell(tube_cut.pierce_delay_2);
         // do the movement
         self.move_xy(&real_start, tube_cut.cut_feedrate);
         self.set_plasma_enabled(false);
-        self.move_xy(&tube_cut.start_position, tube_cut.cut_feedrate);
+
+        // conditionally home after cut
+        if cutter_settings.home_after_cut {
+            self.move_xy(&tube_cut.start_position, tube_cut.cut_feedrate);
+        }
+        
 
     }
     
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn jog(x_dist: f32, y_dist: f32) -> String {
-    format!("$J=G91 G21 X{} Y{} F600", x_dist, y_dist)
+pub fn jog(x_dist: f32, y_dist: f32, cutter_settings: CutterSettings) -> String {
+    format!("$J=G91 G21 X{} Y{} F{}", x_dist, y_dist, cutter_settings.jog_speed)
 }
