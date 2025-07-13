@@ -2,6 +2,7 @@ use crate::api::gcode::calculate_end_pos;
 
 use super::gcode::Pos2D;
 
+
 // the cut struct has info like start and end positions, cut angle and so on
 #[flutter_rust_bridge::frb(opaque)]
 pub struct Cut {
@@ -11,6 +12,11 @@ pub struct Cut {
     pub cut_angle: f32,
     pub cut_feedrate: f32,
     pub pierce_delay: f32,
+}
+
+#[flutter_rust_bridge::frb]
+pub struct TestStruct {
+    pub test_a: f32,
 }
 
 impl Cut {

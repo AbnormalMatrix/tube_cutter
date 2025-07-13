@@ -6,6 +6,7 @@
 import '../frb_generated.dart';
 import 'cut.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'settings.dart';
 
 // These functions are ignored because they are not marked as `pub`: `set_units_to_mm`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `DistUnit`
@@ -43,7 +44,7 @@ abstract class Gcode implements RustOpaqueInterface {
     required String gComment,
   });
 
-  void addCut({required Cut tubeCut});
+  void addCut({required Cut tubeCut, required CutterSettings cutterSettings});
 
   String get gcodeString;
 

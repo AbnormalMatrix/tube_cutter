@@ -1,7 +1,7 @@
 use std::{fs, path::PathBuf};
 
 use super::cut::Cut;
-
+use super::settings::{CutterSettings, CutMethod};
 
 pub fn calculate_end_pos(start_pos: &Pos2D, tube_width: f32, cut_angle: f32, overshoot_amount: f32, cut_right: bool) -> Pos2D {
     let mut end_x = 0.0;
@@ -141,10 +141,16 @@ impl Gcode {
     // add a cut to the gcode
 
     #[flutter_rust_bridge::frb(sync)]
-    pub fn add_cut(&mut self, tube_cut: Cut) {
+    pub fn add_cut(&mut self, tube_cut: Cut, cutter_settings: CutterSettings) {
         // calculate the end position
 
-        let real_start = Pos2D::new(&tube_cut.start_position.x + 40.0, tube_cut.start_position.y);
+        let mut real_start = Pos2D::new(&tube_cut.start_position.x + 40.0, tube_cut.start_position.y);
+
+        // if using the laser pointer, adjust the start position
+        if cutter_settings.use_laser {
+            real_start.x = real_start.x + cutter_settings.laser_offset_x;
+            real_start.y = real_start.y + cutter_settings.laser_offset_y;
+        }
 
         let end_position = calculate_end_pos(&real_start, tube_cut.tube_width, tube_cut.cut_angle, 1.0, true);
 

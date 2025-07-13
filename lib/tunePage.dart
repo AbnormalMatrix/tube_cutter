@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tube_cutter/src/rust/api/cut.dart';
+import 'package:flutter_tube_cutter/src/rust/api/settings.dart';
 import 'package:flutter_tube_cutter/src/rust/api/simple.dart';
 import 'package:flutter_tube_cutter/src/rust/api/gcode.dart';
 
 class TunePage extends StatefulWidget {
   // this is the rust gcode struct, in dart you can't interact with the attributes but you can call the methods
   final ValueNotifier<Gcode> gcode;
+  final CutterSettings cutterSettings;
 
-  const TunePage({super.key, required this.gcode});
+  const TunePage(
+      {super.key, required this.gcode, required this.cutterSettings});
 
   @override
   State<TunePage> createState() => _TunePageState();
@@ -72,7 +75,8 @@ class _TunePageState extends State<TunePage> {
       tubeCut.setPierceDelay(newDelay: pierceDelay.toDouble());
     }
 
-    widget.gcode.value.addCut(tubeCut: tubeCut);
+    widget.gcode.value
+        .addCut(tubeCut: tubeCut, cutterSettings: widget.cutterSettings);
   }
 
   @override

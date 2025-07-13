@@ -7,6 +7,8 @@ import '../frb_generated.dart';
 import 'gcode.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `TestStruct`
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Cut>>
 abstract class Cut implements RustOpaqueInterface {
   double get cutAngle;

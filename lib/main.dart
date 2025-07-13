@@ -6,7 +6,7 @@ import 'package:flutter_tube_cutter/runJobPage.dart';
 import 'package:flutter_tube_cutter/settingsPage.dart';
 import 'package:flutter_tube_cutter/src/rust/api/gcode.dart';
 import 'package:flutter_tube_cutter/src/rust/api/sender.dart';
-import 'package:flutter_tube_cutter/src/rust/api/simple.dart';
+import 'package:flutter_tube_cutter/src/rust/api/settings.dart';
 import 'package:flutter_tube_cutter/src/rust/frb_generated.dart';
 import 'package:flutter_tube_cutter/tunePage.dart';
 
@@ -38,6 +38,9 @@ class _MyAppState extends State<MyApp> {
   ValueNotifier<MachinePosition> machinePosition =
       ValueNotifier<MachinePosition>(MachinePosition());
 
+  // main settings
+  CutterSettings cutterSettings = CutterSettings();
+
   void onNavItemTapped(int index) {
     setState(() {
       selectedIndex = index;
@@ -65,11 +68,9 @@ class _MyAppState extends State<MyApp> {
             Expanded(
               child: [
                 HomePage(),
-                SettingsPage(),
-                TunePage(gcode: gcode),
-                GcodePreviewPage(
-                  gcode: gcode,
-                ),
+                SettingsPage(cutterSettings: cutterSettings),
+                TunePage(gcode: gcode, cutterSettings: cutterSettings),
+                GcodePreviewPage(gcode: gcode),
                 RunJobPage(
                   gcode: gcode,
                   machineConnection: machineConnection,

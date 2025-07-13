@@ -6,6 +6,7 @@
 import 'api/cut.dart';
 import 'api/gcode.dart';
 import 'api/sender.dart';
+import 'api/settings.dart';
 import 'api/simple.dart';
 import 'api/status.dart';
 import 'dart:async';
@@ -68,7 +69,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.10.0';
 
   @override
-  int get rustContentHash => 1607051571;
+  int get rustContentHash => 1422603893;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -142,6 +143,48 @@ abstract class RustLibApi extends BaseApi {
     required double newWidth,
   });
 
+  CutMethod crateApiSettingsCutterSettingsAutoAccessorGetCutMethod({
+    required CutterSettings that,
+  });
+
+  double crateApiSettingsCutterSettingsAutoAccessorGetLaserOffsetX({
+    required CutterSettings that,
+  });
+
+  double crateApiSettingsCutterSettingsAutoAccessorGetLaserOffsetY({
+    required CutterSettings that,
+  });
+
+  bool crateApiSettingsCutterSettingsAutoAccessorGetUseLaser({
+    required CutterSettings that,
+  });
+
+  void crateApiSettingsCutterSettingsAutoAccessorSetCutMethod({
+    required CutterSettings that,
+    required CutMethod cutMethod,
+  });
+
+  void crateApiSettingsCutterSettingsAutoAccessorSetLaserOffsetX({
+    required CutterSettings that,
+    required double laserOffsetX,
+  });
+
+  void crateApiSettingsCutterSettingsAutoAccessorSetLaserOffsetY({
+    required CutterSettings that,
+    required double laserOffsetY,
+  });
+
+  void crateApiSettingsCutterSettingsAutoAccessorSetUseLaser({
+    required CutterSettings that,
+    required bool useLaser,
+  });
+
+  CutterSettings crateApiSettingsCutterSettingsLoad();
+
+  CutterSettings crateApiSettingsCutterSettingsNew();
+
+  void crateApiSettingsCutterSettingsSave({required CutterSettings that});
+
   Future<void> crateApiGcodeGcodeAddCommand({
     required Gcode that,
     required String gCommand,
@@ -153,7 +196,11 @@ abstract class RustLibApi extends BaseApi {
     required String gComment,
   });
 
-  void crateApiGcodeGcodeAddCut({required Gcode that, required Cut tubeCut});
+  void crateApiGcodeGcodeAddCut({
+    required Gcode that,
+    required Cut tubeCut,
+    required CutterSettings cutterSettings,
+  });
 
   String crateApiGcodeGcodeAutoAccessorGetGcodeString({required Gcode that});
 
@@ -303,6 +350,23 @@ abstract class RustLibApi extends BaseApi {
   RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Cut;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_CutPtr;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_CutMethod;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_CutMethod;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_CutMethodPtr;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_CutterSettings;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_CutterSettings;
+
+  CrossPlatformFinalizerArg
+  get rust_arc_decrement_strong_count_CutterSettingsPtr;
 
   RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Gcode;
 
@@ -903,6 +967,354 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   );
 
   @override
+  CutMethod crateApiSettingsCutterSettingsAutoAccessorGetCutMethod({
+    required CutterSettings that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 19)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutMethod,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiSettingsCutterSettingsAutoAccessorGetCutMethodConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiSettingsCutterSettingsAutoAccessorGetCutMethodConstMeta =>
+      const TaskConstMeta(
+        debugName: "CutterSettings_auto_accessor_get_cut_method",
+        argNames: ["that"],
+      );
+
+  @override
+  double crateApiSettingsCutterSettingsAutoAccessorGetLaserOffsetX({
+    required CutterSettings that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_f_32,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiSettingsCutterSettingsAutoAccessorGetLaserOffsetXConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiSettingsCutterSettingsAutoAccessorGetLaserOffsetXConstMeta =>
+      const TaskConstMeta(
+        debugName: "CutterSettings_auto_accessor_get_laser_offset_x",
+        argNames: ["that"],
+      );
+
+  @override
+  double crateApiSettingsCutterSettingsAutoAccessorGetLaserOffsetY({
+    required CutterSettings that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 21)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_f_32,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiSettingsCutterSettingsAutoAccessorGetLaserOffsetYConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiSettingsCutterSettingsAutoAccessorGetLaserOffsetYConstMeta =>
+      const TaskConstMeta(
+        debugName: "CutterSettings_auto_accessor_get_laser_offset_y",
+        argNames: ["that"],
+      );
+
+  @override
+  bool crateApiSettingsCutterSettingsAutoAccessorGetUseLaser({
+    required CutterSettings that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiSettingsCutterSettingsAutoAccessorGetUseLaserConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiSettingsCutterSettingsAutoAccessorGetUseLaserConstMeta =>
+      const TaskConstMeta(
+        debugName: "CutterSettings_auto_accessor_get_use_laser",
+        argNames: ["that"],
+      );
+
+  @override
+  void crateApiSettingsCutterSettingsAutoAccessorSetCutMethod({
+    required CutterSettings that,
+    required CutMethod cutMethod,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+            that,
+            serializer,
+          );
+          sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutMethod(
+            cutMethod,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiSettingsCutterSettingsAutoAccessorSetCutMethodConstMeta,
+        argValues: [that, cutMethod],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiSettingsCutterSettingsAutoAccessorSetCutMethodConstMeta =>
+      const TaskConstMeta(
+        debugName: "CutterSettings_auto_accessor_set_cut_method",
+        argNames: ["that", "cutMethod"],
+      );
+
+  @override
+  void crateApiSettingsCutterSettingsAutoAccessorSetLaserOffsetX({
+    required CutterSettings that,
+    required double laserOffsetX,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+            that,
+            serializer,
+          );
+          sse_encode_f_32(laserOffsetX, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 24)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiSettingsCutterSettingsAutoAccessorSetLaserOffsetXConstMeta,
+        argValues: [that, laserOffsetX],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiSettingsCutterSettingsAutoAccessorSetLaserOffsetXConstMeta =>
+      const TaskConstMeta(
+        debugName: "CutterSettings_auto_accessor_set_laser_offset_x",
+        argNames: ["that", "laserOffsetX"],
+      );
+
+  @override
+  void crateApiSettingsCutterSettingsAutoAccessorSetLaserOffsetY({
+    required CutterSettings that,
+    required double laserOffsetY,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+            that,
+            serializer,
+          );
+          sse_encode_f_32(laserOffsetY, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiSettingsCutterSettingsAutoAccessorSetLaserOffsetYConstMeta,
+        argValues: [that, laserOffsetY],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiSettingsCutterSettingsAutoAccessorSetLaserOffsetYConstMeta =>
+      const TaskConstMeta(
+        debugName: "CutterSettings_auto_accessor_set_laser_offset_y",
+        argNames: ["that", "laserOffsetY"],
+      );
+
+  @override
+  void crateApiSettingsCutterSettingsAutoAccessorSetUseLaser({
+    required CutterSettings that,
+    required bool useLaser,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+            that,
+            serializer,
+          );
+          sse_encode_bool(useLaser, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 26)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiSettingsCutterSettingsAutoAccessorSetUseLaserConstMeta,
+        argValues: [that, useLaser],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiSettingsCutterSettingsAutoAccessorSetUseLaserConstMeta =>
+      const TaskConstMeta(
+        debugName: "CutterSettings_auto_accessor_set_use_laser",
+        argNames: ["that", "useLaser"],
+      );
+
+  @override
+  CutterSettings crateApiSettingsCutterSettingsLoad() {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 27)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiSettingsCutterSettingsLoadConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiSettingsCutterSettingsLoadConstMeta =>
+      const TaskConstMeta(debugName: "CutterSettings_load", argNames: []);
+
+  @override
+  CutterSettings crateApiSettingsCutterSettingsNew() {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 28)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiSettingsCutterSettingsNewConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiSettingsCutterSettingsNewConstMeta =>
+      const TaskConstMeta(debugName: "CutterSettings_new", argNames: []);
+
+  @override
+  void crateApiSettingsCutterSettingsSave({required CutterSettings that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 29)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiSettingsCutterSettingsSaveConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiSettingsCutterSettingsSaveConstMeta =>
+      const TaskConstMeta(debugName: "CutterSettings_save", argNames: ["that"]);
+
+  @override
   Future<void> crateApiGcodeGcodeAddCommand({
     required Gcode that,
     required String gCommand,
@@ -919,7 +1331,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 19,
+            funcId: 30,
             port: port_,
           );
         },
@@ -959,7 +1371,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 20,
+            funcId: 31,
             port: port_,
           );
         },
@@ -981,7 +1393,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  void crateApiGcodeGcodeAddCut({required Gcode that, required Cut tubeCut}) {
+  void crateApiGcodeGcodeAddCut({
+    required Gcode that,
+    required Cut tubeCut,
+    required CutterSettings cutterSettings,
+  }) {
     return handler.executeSync(
       SyncTask(
         callFfi: () {
@@ -994,14 +1410,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             tubeCut,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 21)!;
+          sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+            cutterSettings,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 32)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
           decodeErrorData: null,
         ),
         constMeta: kCrateApiGcodeGcodeAddCutConstMeta,
-        argValues: [that, tubeCut],
+        argValues: [that, tubeCut, cutterSettings],
         apiImpl: this,
       ),
     );
@@ -1009,7 +1429,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiGcodeGcodeAddCutConstMeta => const TaskConstMeta(
     debugName: "Gcode_add_cut",
-    argNames: ["that", "tubeCut"],
+    argNames: ["that", "tubeCut", "cutterSettings"],
   );
 
   @override
@@ -1022,7 +1442,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 33)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -1055,7 +1475,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_String(gcodeString, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 34)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1091,7 +1511,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 24,
+            funcId: 35,
             port: port_,
           );
         },
@@ -1121,7 +1541,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 36)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -1157,7 +1577,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 26,
+            funcId: 37,
             port: port_,
           );
         },
@@ -1199,7 +1619,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 27,
+            funcId: 38,
             port: port_,
           );
         },
@@ -1225,7 +1645,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 28)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 39)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -1259,7 +1679,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 29,
+            funcId: 40,
             port: port_,
           );
         },
@@ -1297,7 +1717,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 30,
+            funcId: 41,
             port: port_,
           );
         },
@@ -1331,7 +1751,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 31,
+            funcId: 42,
             port: port_,
           );
         },
@@ -1366,7 +1786,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 32,
+            funcId: 43,
             port: port_,
           );
         },
@@ -1397,7 +1817,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 33)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 44)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1430,7 +1850,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_StreamSink_machine_position_Sse(sink, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 34)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 45)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1456,7 +1876,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 35)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 46)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -1487,7 +1907,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_String(command, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 36)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 47)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1520,7 +1940,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_String(command, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 37)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 48)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1554,7 +1974,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_String(command, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 38)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 49)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1589,7 +2009,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_String(newPort, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 39)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 50)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1620,7 +2040,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 40)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 51)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_machine_state,
@@ -1653,7 +2073,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 41)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 52)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -1688,7 +2108,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_machine_state(machineState, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 42)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 53)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1726,7 +2146,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             position,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 43)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 54)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1755,7 +2175,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 44,
+            funcId: 55,
             port: port_,
           );
         },
@@ -1784,7 +2204,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 45)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 56)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_f_32,
@@ -1813,7 +2233,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 46)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 57)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_f_32,
@@ -1846,7 +2266,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_f_32(x, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 47)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 58)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1879,7 +2299,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_f_32(y, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 48)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 59)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -1909,7 +2329,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 49,
+            funcId: 60,
             port: port_,
           );
         },
@@ -1947,7 +2367,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 50,
+            funcId: 61,
             port: port_,
           );
         },
@@ -1992,7 +2412,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 51,
+            funcId: 62,
             port: port_,
           );
         },
@@ -2040,7 +2460,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 52,
+            funcId: 63,
             port: port_,
           );
         },
@@ -2067,7 +2487,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 53)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 64)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_String,
@@ -2090,7 +2510,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_String(name, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 54)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 65)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -2115,7 +2535,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 55,
+            funcId: 66,
             port: port_,
           );
         },
@@ -2141,7 +2561,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_f_32(xDist, serializer);
           sse_encode_f_32(yDist, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 56)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 67)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -2163,7 +2583,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 57)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 68)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_machine_position,
@@ -2191,7 +2611,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 58,
+            funcId: 69,
             port: port_,
           );
         },
@@ -2221,7 +2641,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 59,
+            funcId: 70,
             port: port_,
           );
         },
@@ -2246,6 +2666,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RustArcDecrementStrongCountFnType
   get rust_arc_decrement_strong_count_Cut => wire
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCut;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_CutMethod => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutMethod;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_CutMethod => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutMethod;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_CutterSettings => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_CutterSettings => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings;
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_Gcode => wire
@@ -2295,6 +2731,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CutMethod
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutMethod(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CutMethodImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  CutterSettings
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CutterSettingsImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Gcode
   dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGcode(
     dynamic raw,
@@ -2337,6 +2791,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return CutImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  CutterSettings
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CutterSettingsImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -2385,6 +2848,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CutterSettings
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CutterSettingsImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Gcode
   dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGcode(
     dynamic raw,
@@ -2427,6 +2899,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return CutImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  CutMethod
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutMethod(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CutMethodImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  CutterSettings
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CutterSettingsImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -2587,6 +3077,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CutMethod
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutMethod(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CutMethodImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  CutterSettings
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CutterSettingsImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   Gcode
   sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGcode(
     SseDeserializer deserializer,
@@ -2641,6 +3155,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return CutImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  CutterSettings
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CutterSettingsImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -2707,6 +3233,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CutterSettings
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CutterSettingsImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   Gcode
   sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGcode(
     SseDeserializer deserializer,
@@ -2761,6 +3299,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return CutImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  CutMethod
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutMethod(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CutMethodImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  CutterSettings
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CutterSettingsImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -2944,6 +3506,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutMethod(
+    CutMethod self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CutMethodImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+    CutterSettings self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CutterSettingsImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGcode(
     Gcode self,
     SseSerializer serializer,
@@ -3003,6 +3591,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as CutImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+    CutterSettings self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CutterSettingsImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -3074,6 +3675,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+    CutterSettings self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CutterSettingsImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerGcode(
     Gcode self,
     SseSerializer serializer,
@@ -3133,6 +3747,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as CutImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutMethod(
+    CutMethod self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CutMethodImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCutterSettings(
+    CutterSettings self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as CutterSettingsImpl).frbInternalSseEncode(move: null),
       serializer,
     );
   }
@@ -3392,6 +4032,85 @@ class CutImpl extends RustOpaque implements Cut {
 }
 
 @sealed
+class CutMethodImpl extends RustOpaque implements CutMethod {
+  // Not to be used by end users
+  CutMethodImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  CutMethodImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_CutMethod,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_CutMethod,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_CutMethodPtr,
+  );
+}
+
+@sealed
+class CutterSettingsImpl extends RustOpaque implements CutterSettings {
+  // Not to be used by end users
+  CutterSettingsImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  CutterSettingsImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_CutterSettings,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_CutterSettings,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_CutterSettingsPtr,
+  );
+
+  CutMethod get cutMethod => RustLib.instance.api
+      .crateApiSettingsCutterSettingsAutoAccessorGetCutMethod(that: this);
+
+  double get laserOffsetX => RustLib.instance.api
+      .crateApiSettingsCutterSettingsAutoAccessorGetLaserOffsetX(that: this);
+
+  double get laserOffsetY => RustLib.instance.api
+      .crateApiSettingsCutterSettingsAutoAccessorGetLaserOffsetY(that: this);
+
+  bool get useLaser => RustLib.instance.api
+      .crateApiSettingsCutterSettingsAutoAccessorGetUseLaser(that: this);
+
+  set cutMethod(CutMethod cutMethod) => RustLib.instance.api
+      .crateApiSettingsCutterSettingsAutoAccessorSetCutMethod(
+        that: this,
+        cutMethod: cutMethod,
+      );
+
+  set laserOffsetX(double laserOffsetX) => RustLib.instance.api
+      .crateApiSettingsCutterSettingsAutoAccessorSetLaserOffsetX(
+        that: this,
+        laserOffsetX: laserOffsetX,
+      );
+
+  set laserOffsetY(double laserOffsetY) => RustLib.instance.api
+      .crateApiSettingsCutterSettingsAutoAccessorSetLaserOffsetY(
+        that: this,
+        laserOffsetY: laserOffsetY,
+      );
+
+  set useLaser(bool useLaser) => RustLib.instance.api
+      .crateApiSettingsCutterSettingsAutoAccessorSetUseLaser(
+        that: this,
+        useLaser: useLaser,
+      );
+
+  void save() =>
+      RustLib.instance.api.crateApiSettingsCutterSettingsSave(that: this);
+}
+
+@sealed
 class GcodeImpl extends RustOpaque implements Gcode {
   // Not to be used by end users
   GcodeImpl.frbInternalDcoDecode(List<dynamic> wire)
@@ -3422,8 +4141,12 @@ class GcodeImpl extends RustOpaque implements Gcode {
     gComment: gComment,
   );
 
-  void addCut({required Cut tubeCut}) => RustLib.instance.api
-      .crateApiGcodeGcodeAddCut(that: this, tubeCut: tubeCut);
+  void addCut({required Cut tubeCut, required CutterSettings cutterSettings}) =>
+      RustLib.instance.api.crateApiGcodeGcodeAddCut(
+        that: this,
+        tubeCut: tubeCut,
+        cutterSettings: cutterSettings,
+      );
 
   String get gcodeString => RustLib.instance.api
       .crateApiGcodeGcodeAutoAccessorGetGcodeString(that: this);
