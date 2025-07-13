@@ -142,17 +142,24 @@ impl Gcode {
 
     #[flutter_rust_bridge::frb(sync)]
     pub fn add_cut(&mut self, tube_cut: Cut, cutter_settings: &CutterSettings) {
+        if cutter_settings.clear_existing_gcode {
+            *self = Gcode::new();
+
+        }
         // calculate the end position
 
-        let mut real_start = Pos2D::new(&tube_cut.start_position.x + 40.0, tube_cut.start_position.y);
+        let mut real_start = Pos2D::new(tube_cut.start_position.x, tube_cut.start_position.y);
+
+        let mut end_position = calculate_end_pos(&real_start, tube_cut.tube_width, tube_cut.cut_angle, 1.0, true);
 
         // if using the laser pointer, adjust the start position
         if cutter_settings.use_laser {
             real_start.x = real_start.x + cutter_settings.laser_offset_x;
             real_start.y = real_start.y + cutter_settings.laser_offset_y;
+            end_position.x = end_position.x + cutter_settings.laser_offset_x;
+            end_position.y = end_position.y + cutter_settings.laser_offset_y;
         }
 
-        let end_position = calculate_end_pos(&real_start, tube_cut.tube_width, tube_cut.cut_angle, 1.0, true);
 
         // move by the laser offset distance
         self.move_xy(&real_start, tube_cut.cut_feedrate);

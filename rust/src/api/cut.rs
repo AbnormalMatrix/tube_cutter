@@ -15,10 +15,6 @@ pub struct Cut {
     pub pierce_delay_2: f32,
 }
 
-#[flutter_rust_bridge::frb]
-pub struct TestStruct {
-    pub test_a: f32,
-}
 
 impl Cut {
     #[flutter_rust_bridge::frb(sync)]

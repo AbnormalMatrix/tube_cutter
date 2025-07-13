@@ -10,6 +10,7 @@ class RunJobPage extends StatefulWidget {
   final MachineConnection machineConnection;
   final ValueNotifier<MachinePosition> machinePosition;
   final CutterSettings cutterSettings;
+
   const RunJobPage({
     super.key,
     required this.gcode,
